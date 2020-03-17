@@ -1,13 +1,16 @@
 export enum DatabaseTableName {
 	PRODUCT = "product",
 	EMPLOYEE = "employee",
-	ACTIVE_USER = "activeuser"
+	ACTIVE_USER = "activeuser",
+	TRANSACTION = "transaction",
+	TRANSACTION_ENTRY = "transactionentry"
 }
 /***************************************/
 
 export enum ProductFieldName {
 	ID = "id",
 	COUNT = "count",
+	PRICE = "price",
 	CREATED_ON = "createdon",
 	LOOKUP_CODE = "lookupcode"
 }
@@ -31,4 +34,22 @@ export enum ActiveUserFieldName {
 	EmployeeId = "employeeid",
 	SessionKey = "sessionkey",
 	Classification = "classification"
+}
+
+export enum TransactionFieldName {
+	ID = "id",
+	Total = "total",
+	CashierId = "cashierid",
+	CreatedOn = "createdon",
+	Type = "transactiontype",
+	ReferenceId = "transactionreferenceid"
+}
+
+export enum TransactionEntryFieldName {
+	ID = "id",
+	Price = "price",
+	Quantity = "quantity",
+	CreatedOn = "createdon",
+	ProductId = "productid",
+	TransactionId = "transactionid"
 }
