@@ -5,6 +5,7 @@ import { Model, DataTypes, InitOptions, ModelAttributes, ModelAttributeColumnOpt
 
 export class ProductModel extends Model {
 	public count!: number;
+	public price!: number;
 	public lookupCode!: string;
 
 	public readonly id!: string;
@@ -22,6 +23,11 @@ ProductModel.init(
 		count: <ModelAttributeColumnOptions>{
 			field: ProductFieldName.COUNT,
 			type: DataTypes.INTEGER,
+			allowNull: true
+		},
+		price: <ModelAttributeColumnOptions>{
+			field: ProductFieldName.PRICE,
+			type: DataTypes.BIGINT,
 			allowNull: true
 		},
 		createdOn: <ModelAttributeColumnOptions>{
