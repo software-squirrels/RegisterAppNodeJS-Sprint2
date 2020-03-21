@@ -2,7 +2,7 @@
 
 <head>
 	<title>Register - Product</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1"> 
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<link rel="stylesheet" type="text/css" href="/styles/master.css">
 	<link rel="stylesheet" type="text/css" href="/styles/productDetail.css">
@@ -16,7 +16,7 @@
 	<div class="header">
 		<h1 class="primary-message">Product Detail</h1>
 	</div>
-		
+
 	<div id="main" class="main">
 		<div id="error" <% if (!locals.errorMessage || (locals.errorMessage === "")) { %> class="hidden" <% } %>>
 			<h4 id="errorMessage" class="error-message">
@@ -45,6 +45,12 @@
 						<td class="label">Count:</td>
 						<td>
 							<input id="productCount" type="number" value="<% if (locals.product && locals.product.count) { %><%= locals.product.count.toString() %><% } %>" class="update" <% if (!locals.isElevatedUser) { %>disabled<% } %> />
+						</td>
+					</tr>
+					<tr>
+						<td class="label">Price:</td>
+						<td>
+							<input id="productPrice" type="number" value="<% if (locals.product && locals.product.price) { %><%= locals.product.price.toString() %><% } %>" class="update" <% if (!locals.isElevatedUser) { %>disabled<% } %> />
 						</td>
 					</tr>
 				</tbody>

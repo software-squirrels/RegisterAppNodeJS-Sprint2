@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	getProductCountElement().addEventListener("keypress", productCountKeypress);
 	productLookupCodeElement.addEventListener("keypress", productLookupCodeKeypress);
-	
+
 	getSaveActionElement().addEventListener("click", saveActionClick);
 	getDeleteActionElement().addEventListener("click", deleteActionClick);
 
@@ -49,6 +49,7 @@ function saveActionClick(event) {
 	const saveProductRequest = {
 		id: productId,
 		count: getProductCount(),
+		price: getProductPrice(),
 		lookupCode: getProductLookupCode()
 	};
 
@@ -134,7 +135,7 @@ function deleteActionClick(event) {
 			if ((callbackResponse.data != null)
 				&& (callbackResponse.data.redirectUrl != null)
 				&& (callbackResponse.data.redirectUrl !== "")) {
-				
+
 				window.location.replace(callbackResponse.data.redirectUrl);
 			} else {
 				window.location.replace("/productListing");
@@ -180,4 +181,13 @@ function getProductCount() {
 function getProductCountElement() {
 	return document.getElementById("productCount");
 }
+
+function getProductPrice() {
+	return Number(getProductPriceElement().value);
+}
+function getProductPriceElement() {
+	return document.getElementById("productPrice");
+}
+
+
 // End getters and setters

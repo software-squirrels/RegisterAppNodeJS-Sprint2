@@ -27,7 +27,7 @@ ProductModel.init(
 		},
 		price: <ModelAttributeColumnOptions>{
 			field: ProductFieldName.PRICE,
-			type: DataTypes.BIGINT,
+			type: DataTypes.DECIMAL(10, 2),
 			allowNull: true
 		},
 		createdOn: <ModelAttributeColumnOptions>{

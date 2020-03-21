@@ -42,6 +42,7 @@ export const execute = async (
 
 	const productToCreate: ProductModel = <ProductModel>{
 		count: saveProductRequest.count,
+		price: saveProductRequest.price,
 		lookupCode: saveProductRequest.lookupCode
 	};
 

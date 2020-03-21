@@ -8,6 +8,7 @@ export interface ProductSaveRequest {
 	id?: string;
 	count: number;
 	lookupCode: string;
+	price: number;
 }
 
 export interface EmployeeSaveRequest {
