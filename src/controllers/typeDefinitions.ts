@@ -27,6 +27,7 @@ export interface EmployeeSaveRequest {
 export interface Product {
 	id: string;
 	count: number;
+	price: number;
 	createdOn: string;
 	lookupCode: string;
 }
@@ -52,6 +53,12 @@ export interface ActiveUser {
 export interface EmployeeType {
 	value: number;
 	label: string;
+}
+
+export interface TransactionListing {
+	price: number;
+	quantity: number;
+	productId: string;
 }
 // End response data object definitions
 
@@ -82,6 +89,10 @@ export interface EmployeeDetailPageResponse extends PageResponse {
 export interface ProductListingPageResponse extends PageResponse {
 	products: Product[];
 	isElevatedUser: boolean;
+}
+
+export interface TransactionPageResponse extends PageResponse {
+	products: Product[];
 }
 // End page response data
 
