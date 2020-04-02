@@ -1,10 +1,8 @@
-<!-- Currently just a copy of the product listing view. Still needs updating -->
-
 <html>
 
 <head>
-	<title>Register - Transaction</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Transaction</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1"> 
 
 	<link rel="stylesheet" type="text/css" href="/styles/master.css">
 	<link rel="stylesheet" type="text/css" href="/styles/transaction.css">
@@ -15,7 +13,7 @@
 
 <body>
 	<div class="header">
-		<h1 class="primary-message">Transaction</h1>
+		<h1 class="primary-message">Transaction Entries</h1>
 	</div>
 
 	<div id="main" class="main">
@@ -27,24 +25,32 @@
 			</h4>
 		</div>
 
-		<div class="productsWrapper">
-			<div <% if (!locals.isElevatedUser) { %>class="hidden"<% } %>>
-				<a href="/productDetail/" class="button">Create New</a>
-			</div>
+		<div class="transactionWrapper">
 			<br />
 			<br />
+			
+			<!--
+			To do list: Change class of buttons to something besides products for layout purposes
+			locals.products should work for now hopefully but later change it
+			
+			Add /scripts/transaction.js
+			Add /styles/transaction.css
+			
+			Add quantity button
+			Add add button
+			
+			Add Total Checkout Price
+			Add Total Quantity
+			-->
 
-			<input type="search" name="search" placeholder="Search"/>
 			<% if (locals.products && (locals.products.length > 0)) { %>
-				<ul id="productsListing" class="products">
+				<ul id="transactionEntries" class="products">
 					<% locals.products.forEach((product) => { %>
 						<li>
 							<input type="hidden" name="productId" value="<%= product.id %>" />
 							<span name="productLookupCode"><%= product.lookupCode %></span>
-							<br />&nbsp;&nbsp;<span name="price">Price: $<%= product.price %></span>
-							<br />&nbsp;&nbsp;<label for="quantity">Quantity: </label>
-  						<input type="number" min="0" max="999" name="quantity">
-							<span class="add" style="float: right;">Add</span>
+							<br />&nbsp;&nbsp;<span name="productCount"><%= product.count %></span>
+							<br />&nbsp;&nbsp;<span name="productCreatedOn"><%= product.createdOn %></span>
 						</li>
 					<% }); %>
 				</ul>
