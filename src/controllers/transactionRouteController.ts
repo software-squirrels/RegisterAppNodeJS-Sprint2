@@ -14,6 +14,8 @@ const processStartTransactionError = (error: any, res: Response): void => {
 	res.setHeader(
 		"Cache-Control",
 		"no-cache, max-age=0, must-revalidate, no-store");
+		
+		//Change the ViewNameLookUp to Transaction and make sure that the products are working currently
 
 	return res.status((error.status || 500))
 		.render(

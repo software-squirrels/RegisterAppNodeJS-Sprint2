@@ -1,7 +1,7 @@
 <html>
 
 <head>
-	<title>Transaction</title>
+	<title>Register - Transaction</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1"> 
 
 	<link rel="stylesheet" type="text/css" href="/styles/master.css">
@@ -41,6 +41,12 @@
 			
 			Add Total Checkout Price
 			Add Total Quantity
+			
+			Set product layout as:
+			Product ID
+			Count
+			Price
+			Transaction Date
 			-->
 
 			<% if (locals.products && (locals.products.length > 0)) { %>
@@ -48,9 +54,11 @@
 					<% locals.products.forEach((product) => { %>
 						<li>
 							<input type="hidden" name="productId" value="<%= product.id %>" />
-							<span name="productLookupCode"><%= product.lookupCode %></span>
 							<br />&nbsp;&nbsp;<span name="productCount"><%= product.count %></span>
-							<br />&nbsp;&nbsp;<span name="productCreatedOn"><%= product.createdOn %></span>
+							<!--
+							Price
+							Transaction Date
+							-->
 						</li>
 					<% }); %>
 				</ul>
