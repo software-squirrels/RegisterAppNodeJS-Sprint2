@@ -93,7 +93,11 @@ export interface ProductListingPageResponse extends PageResponse {
 }
 
 export interface TransactionPageResponse extends PageResponse {
-	products: Product[];
+	products: Product[];	//Change to transaction entries
+}
+
+export interface CheckoutPageResponse extends PageResponse {
+	products: Product[];	//Change to transaction entries
 }
 // End page response data
 
