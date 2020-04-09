@@ -1,0 +1,39 @@
+<html>
+    <head>
+	
+        <title>Checkout</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1"> 
+        <link rel="stylesheet" type="text/css" href="/styles/master.css">
+
+        <script type="text/javascript" src="/scripts/master.js" defer></script>
+        <script type="text/javascript" src="/scripts/productListing.js" defer></script>
+
+    </head>
+    <body>
+        <div class = "header">
+            <h1 class = "primary-message">Checkout</h1>
+        </div>
+
+		<div id="main" class="main">
+			<div id="error" <% if (!locals.errorMessage || (locals.errorMessage === "")) { %> class="hidden" <% } %>>
+				<h4 id="errorMessage" class="error-message">
+					<% if (locals.errorMessage && (locals.errorMessage !== "")) { %>
+						<%= locals.errorMessage %>
+					<% } %>
+				</h4>
+			</div>
+
+			<div class = "productArea">
+			
+			</div>
+			
+			<div class = "footer">
+				<button id="discardButton" type="button" class="action">Back</button>
+				<button id="finalizeButton" type="button" class="action">Finalize</button>
+			</div>
+			
+			
+		</div>
+    </body>
+	
+</html>
