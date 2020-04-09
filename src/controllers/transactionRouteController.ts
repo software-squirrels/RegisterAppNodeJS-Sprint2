@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { Resources, ResourceKey } from "../resourceLookup";
-import { TransactionPageResponse, CommandResponse, ActiveUser, Product, ProductListingPageResponse } from "./typeDefinitions";
+import { TransactionPageResponse, TransactionListing, CommandResponse, ActiveUser, Product, ProductListingPageResponse } from "./typeDefinitions";
 import * as Helper from "./helpers/routeControllerHelper";
 import * as ProductsQuery from "./commands/products/productsQuery";
 import * as ValidateActiveUser from "./commands/activeUsers/validateActiveUserCommand";
@@ -31,15 +31,35 @@ export const start = async (req: Request, res: Response): Promise<void> => {
 		return;
 	}
 
+	let activeUserResponse: CommandResponse<ActiveUser>;
 	return ValidateActiveUser.execute((<Express.Session>req.session).id)
-	.then((): Promise<CommandResponse<Product[]>> => {
+	.then((activeUserCommandResponse: CommandResponse<ActiveUser>): Promise<CommandResponse<Product[]>> => {
+		activeUserResponse = activeUserCommandResponse;
 		return ProductsQuery.query();
 	}).then((productsCommandResponse: CommandResponse<Product[]>): void => {
 		return res.render(ViewNameLookup.Transaction,
 		<TransactionPageResponse>{
-			products: productsCommandResponse.data
+			products: productsCommandResponse.data,
+			employeeId: activeUserResponse.data!.id
 		});
 	}).catch((error: any): void => {
 		return processStartTransactionError(error, res);
 	});
 };
+
+export const checkTransactionEntry = async (req: Request, res: Response): Promise<void> => {
+	return QueryTransactionEntry.execute((<Express.Session>req.session).id)
+	.then((): void => {
+		res.sendStatus(200);
+	}).catch((): void => {
+		res.sendStatus(404);
+	});
+};
+
+export const createTransactionEntry = async (req: Request, res: Response): Promise<void> => {
+	return CreateTransactionEntry.execute(req.body)
+}
+
+export const updateTransactionEntry = async (req: Request, res: Response): Promise<void> => {
+	return saveTransactionEntry(req, res, TransactionEntryUpdateCommand.execute);
+}
