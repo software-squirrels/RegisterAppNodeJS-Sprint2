@@ -1,13 +1,10 @@
 <html>
     <head>
-	
         <title>Checkout</title>
         <meta name="viewport" content="width=device-width, initial-scale=1"> 
         <link rel="stylesheet" type="text/css" href="/styles/master.css">
 
-        <script type="text/javascript" src="/scripts/master.js" defer></script>
-        <script type="text/javascript" src="/scripts/productListing.js" defer></script>
-
+        <script type="text/javascript" src="/scripts/master.js" defer></script>4
     </head>
     <body>
         <div class = "header">
@@ -23,48 +20,51 @@
 				</h4>
 			</div>
 
-			<div class = "productArea">
-			<!-- 
-				<div class="productDetailWrapper">
-			<table id="productDetails">
-				<tbody>
-					<tr class="hidden">
-						<td>ID:</td>
-						<td>
-							<input id="productId" type="hidden" value="<% if (locals.product && locals.product.id) { %><%= locals.product.id %><% } %>" />
-						</td>
-					</tr>
-					<tr>
-						<td class="label">Lookup Code:</td>
-						<td>
-							<input id="productLookupCode" type="text" value="<% if (locals.product && locals.product.lookupCode) { %><%= locals.product.lookupCode %><% } %>" class="update" <% if (!locals.isElevatedUser) { %>disabled<% } %> />
-						</td>
-					</tr>
-					<tr>
-						<td class="label">Count:</td>
-						<td>
-							<input id="productCount" type="number" value="<% if (locals.product && locals.product.count) { %><%= locals.product.count.toString() %><% } %>" class="update" <% if (!locals.isElevatedUser) { %>disabled<% } %> />
-						</td>
-					</tr>
-					<tr>
-						<td class="label">Price:</td>
-						<td>
-							<input id="productPrice" type="number" value="<% if (locals.product && locals.product.price) { %><%= locals.product.price.toString() %><% } %>" class="update" <% if (!locals.isElevatedUser) { %>disabled<% } %> />
-						</td>
-					</tr>
-				</tbody>
-			</table>
-			-->
+			<div class = "inputContent">
+				<table id="transactionDetails">
+					<tbody>
+						<% if (locals.transaction && (locals.transaction.length > 0)) { %>
+						<tr>
+							<th>
+								<span name = "transactionID">Transaction ID: <%= transaction.id %></span> </br>
+								<span name = "transactionCount">Count: <%= transaction.count%> </span> </br>
+								<span name = "transactionPrice">Price: <%= transaction.Price %> </span> </br>
+								<span name = "transactionDate">Transaction Date: <%= transaction.Date %></span>
+							</th>
+							<th>
+								<button id="QuantityButton" type="button" class="action">Quantity</button>
+								<input type = "hidden" name = "Quantity" type="number">
+							</th>
+							<th>
+								<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+									<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+									<path d="M0 0h24v24H0z" fill="none"/></svg>
+							</th>
+						</tr>
+						<% } %>
+					</tbody>
+				</table>
+
+				<form>
+					<label for="quantity">Quantity:</label>
+					<input type="text" id="quantity" name="quantity">
+				</form>
+			</div>
 			
+			<div>
+				<form>
+					<label for="totalPrice">Total Checkout Price:</label>
+					<input id="totalPrice" type="text" value="" class="update"/><br>
+					<label for="totalQuantity">Total Quantity:</label>
+					<input id="totalQuantity" type="text" value="" class="update"/>
+				</form>
 			</div>
 			
 			<div class = "footer">
+				<button id="updateButton" type="button" class="action">Update</button>
 				<button id="discardButton" type="button" class="action">Back</button>
 				<button id="finalizeButton" type="button" class="action">Finalize</button>
 			</div>
-			
-			
 		</div>
     </body>
-	
 </html>
