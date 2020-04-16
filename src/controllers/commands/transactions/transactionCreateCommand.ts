@@ -44,9 +44,9 @@ const saveTransactionEntriesInRecursivePromiseChain = async (
 };
 
 export const execute = (employeeId: string): Promise<CommandResponse<void>> => {
-	let dummyTransactionTotal: number = 0;
+	let TransactionTotal: number = 0;
 	let createTransaction: Sequelize.Transaction;
-	const dummyTransactionEntries: TransactionEntryModel[] = [];
+	const TransactionEntries: TransactionEntryModel[] = [];
 
 	return ProductRepository.queryAll()
 		.then((queriedProducts: ProductModel[]): Promise<Sequelize.Transaction> => {
@@ -54,10 +54,10 @@ export const execute = (employeeId: string): Promise<CommandResponse<void>> => {
 				const purchasedQuantity =
 					(Math.floor(Math.random() * Math.floor(10)) + 1);
 
-				dummyTransactionTotal +=
+				TransactionTotal +=
 					(queriedProducts[i].price * purchasedQuantity);
 
-				dummyTransactionEntries.push(<TransactionEntryModel>{
+				TransactionEntries.push(<TransactionEntryModel>{
 					quantity: purchasedQuantity,
 					price: queriedProducts[i].price,
 					productId: queriedProducts[i].id
@@ -71,20 +71,20 @@ export const execute = (employeeId: string): Promise<CommandResponse<void>> => {
 			return TransactionModel.create(<TransactionModel>{
 				type: 1,
 				cashierId: employeeId,
-				total: dummyTransactionTotal
+				total: TransactionTotal
 			},
 			<Sequelize.CreateOptions>{ transaction: createTransaction });
-		}).then((createdDummyTransaction: TransactionModel): Promise<void> => {
-			for (let i: number = 0; i < dummyTransactionEntries.length; i++) {
-				dummyTransactionEntries[i].transactionId =
-					createdDummyTransaction.id;
+		}).then((createdTransaction: TransactionModel): Promise<void> => {
+			for (let i: number = 0; i < TransactionEntries.length; i++) {
+				TransactionEntries[i].transactionId =
+					createdTransaction.id;
 			}
 
 			return saveTransactionEntriesInRecursivePromiseChain( // Save via promise chain
-				dummyTransactionEntries,
+				TransactionEntries,
 				createTransaction);
 			// return saveTransactionEntriesViaAsyncAwait( // Save via async/await
-			// 	dummyTransactionEntries,
+			// 	TransactionEntries,
 			// 	createTransaction);
 		}).then((): CommandResponse<void> => {
 			createTransaction.commit();
