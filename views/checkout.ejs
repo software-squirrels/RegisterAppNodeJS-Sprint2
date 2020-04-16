@@ -2,9 +2,10 @@
     <head>
         <title>Checkout</title>
         <meta name="viewport" content="width=device-width, initial-scale=1"> 
-        <link rel="stylesheet" type="text/css" href="/styles/master.css">
+		<link rel="stylesheet" type="text/css" href="/styles/master.css">
+		<link rel="stylesheet" type="text/css" href="/styles/checkout.css">
 
-        <script type="text/javascript" src="/scripts/master.js" defer></script>4
+        <script type="text/javascript" src="/scripts/master.js" defer></script>
     </head>
     <body>
         <div class = "header">
@@ -24,33 +25,34 @@
 				<table id="transactionDetails">
 					<tbody>
 						<% if (locals.transaction && (locals.transaction.length > 0)) { %>
-						<tr>
-							<th>
+						<tr class = "transactions">
+							<td>
 								<span name = "transactionID">Transaction ID: <%= transaction.id %></span> </br>
 								<span name = "transactionCount">Count: <%= transaction.count%> </span> </br>
 								<span name = "transactionPrice">Price: <%= transaction.Price %> </span> </br>
 								<span name = "transactionDate">Transaction Date: <%= transaction.Date %></span>
-							</th>
-							<th>
+							</td>
+							<td class = "quantityChange">
 								<button id="QuantityButton" type="button" class="action">Quantity</button>
 								<input type = "hidden" name = "Quantity" type="number">
-							</th>
-							<th>
+								<form>
+									<label for="quantity">Quantity:</label>
+									<input type="text" id="quantity" name="quantity">
+								</form>
+							</td>
+							<td>
 								<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
 									<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
 									<path d="M0 0h24v24H0z" fill="none"/></svg>
-							</th>
+							</td>
 						</tr>
 						<% } %>
 					</tbody>
 				</table>
-
-				<form>
-					<label for="quantity">Quantity:</label>
-					<input type="text" id="quantity" name="quantity">
-				</form>
 			</div>
 			
+
+			<!--
 			<div>
 				<form>
 					<label for="totalPrice">Total Checkout Price:</label>
@@ -59,10 +61,14 @@
 					<input id="totalQuantity" type="text" value="" class="update"/>
 				</form>
 			</div>
+			-->
 			
 			<div class = "footer">
-				<button id="updateButton" type="button" class="action">Update</button>
+				<span name = "totalQuantity">TotalQuantity: <%= transaction.totalQuantity %></span> </br>
+				<span name = "totalPrice">TotalPrice: <%= transaction.totalPrice %></span> </br>
+				
 				<button id="discardButton" type="button" class="action">Back</button>
+				<button id="updateButton" type="button" class="action">Update</button>
 				<button id="finalizeButton" type="button" class="action">Finalize</button>
 			</div>
 		</div>
