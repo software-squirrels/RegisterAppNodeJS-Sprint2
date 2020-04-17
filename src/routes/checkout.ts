@@ -1,13 +1,13 @@
 import express from "express";
 import { RouteLookup } from "../controllers/lookups/routingLookup";
-import * as CheckOutRouteController from "../controllers/checkoutRouteController";
+import * as CheckoutRouteController from "../controllers/checkoutRouteController";
 
 function checkoutRoutes(server: express.Express) {
-	server.get(RouteLookup.Checkout, CheckoutController.start);
+	server.get(RouteLookup.Checkout, CheckoutRouteController.start);
 
-	server.post(RouteLookup.Checkout, CheckoutController.confirmation);
-	
-	server.patch(RouteLookup.Checkout, CheckoutController.update);
+	server.post(RouteLookup.Checkout, CheckoutRouteController.confirmation);
+
+	server.patch(RouteLookup.Checkout, CheckoutRouteController.update);
 
 	//server.delete(
 		//(RouteLookup.API + RouteLookup.SignOut),

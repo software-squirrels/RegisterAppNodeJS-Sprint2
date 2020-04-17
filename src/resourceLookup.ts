@@ -95,7 +95,7 @@ export enum ResourceKey {
 	/** Please provide a valid employee ID. */
 	EMPLOYEE_EMPLOYEE_ID_INVALID = "0104007",
 	// End general - employee
-	
+
 	// Database - transaction
 	/** transaction was not found. */
 	TRANSACTION_NOT_FOUND = "0010008",
@@ -106,12 +106,12 @@ export enum ResourceKey {
 	/** Unable to retrieve transaction listing. */
 	TRANSACTION_UNABLE_TO_QUERY = "0010011",
 	// End database - transaction
-	
+
 	// General - transaction
 	/** The provided transaction record ID is not valid. */
-	TRANASCTION_RECORD_ID_INVALID = "0105001",
+	TRANSACTION_RECORD_ID_INVALID = "0105001",
 	/** The provided transaction cashier ID is not valid. */
-	TRANASCTION_CASHIER_ID_INVALID = "0105002",
+	TRANSACTION_CASHIER_ID_INVALID = "0105002",
 	/** Please provide a valid total. */
 	TRANSACTION_TOTAL_INVALID = "0105003",
 	/** The provided transaction type is not valid. */

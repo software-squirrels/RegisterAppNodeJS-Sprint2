@@ -5,9 +5,9 @@ import { TransactionModel } from "../../models/transactionModel";
 export const mapTransactionData = (queriedTransaction: TransactionModel): TransactionListing => {
 	return <TransactionListing>{
 		id: queriedTransaction.id,
-		count: queriedTransaction.count,
-		price: queriedTransaction.price,
-		lookupCode: queriedTransaction.lookupCode,
-		createdOn: Helper.formatDate(queriedTransaction.createdOn)
+		cashierId: queriedTransaction.cashierId,
+		total: queriedTransaction.total,
+		transactionType: queriedTransaction.type,
+		transactionReferenceId: queriedTransaction.referenceId
 	};
 };

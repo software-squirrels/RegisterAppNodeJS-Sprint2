@@ -2,6 +2,7 @@ import Sequelize from "sequelize";
 import * as Helper from "../helpers/helper";
 import { TransactionModel } from "../models/transactionModel";
 import { CommandResponse } from "../../typeDefinitions";
+import { ProductModel } from "../models/productModel";
 import * as TransactionRepository from "../models/transactionModel";
 import { Resources, ResourceKey } from "../../../resourceLookup";
 import * as DatabaseConnection from "../models/databaseConnection";

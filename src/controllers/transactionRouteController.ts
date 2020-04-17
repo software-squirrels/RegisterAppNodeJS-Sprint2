@@ -57,9 +57,11 @@ export const checkTransactionEntry = async (req: Request, res: Response): Promis
 };
 
 export const createTransactionEntry = async (req: Request, res: Response): Promise<void> => {
-	return CreateTransactionEntry.execute(req.body)
+	return;
+	// return CreateTransactionEntry.execute(req.body)
 }
 
 export const updateTransactionEntry = async (req: Request, res: Response): Promise<void> => {
-	return saveTransactionEntry(req, res, TransactionEntryUpdateCommand.execute);
+	return;
+	// return saveTransactionEntry(req, res, TransactionEntryUpdateCommand.execute);
 }
