@@ -14,7 +14,7 @@ export const execute = async (transactionId?: string): Promise<CommandResponse<v
 	let deleteTransaction: Sequelize.Transaction;
 
 	return DatabaseConnection.createTransaction()
-		.then((createdTransaction: Sequelize.Transaction): Promise<ProductModel | null> => {
+		.then((createdTransaction: Sequelize.Transaction): Promise<TransactionModel | null> => {
 			deleteTransaction = createdTransaction;
 
 			return TransactionRepository.queryById(

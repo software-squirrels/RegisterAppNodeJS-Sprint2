@@ -29,18 +29,18 @@ export const queryById = async (transactionId?: string): Promise<CommandResponse
 		});
 };
 
-export const queryByCasherId = async (
-	productCasherId?: string
+export const queryByCashierId = async (
+	transactionCashierId?: string
 ): Promise<CommandResponse<TransactionListing>> => {
 
-	if (Helper.isBlankString(productCasherId)) {
+	if (Helper.isBlankString(transactionCashierId)) {
 		return Promise.reject(<CommandResponse<TransactionListing>>{
 			status: 422,
-			message: Resources.getString(ResourceKey.TRANSACTION_LOOKUP_CODE_INVALID)
+			message: Resources.getString(ResourceKey.TRANSACTION_CASHIER_ID_INVALID)
 		});
 	}
 
-	return TransactionRepository.queryByLookupCode(<string>productCasherId)
+	return TransactionRepository.queryByCashierId(<string>transactionCashierId)
 		.then((queriedTransaction: (TransactionModel | null)): Promise<CommandResponse<TransactionListing>> => {
 			if (queriedTransaction == null) {
 				return Promise.reject(<CommandResponse<TransactionListing>>{

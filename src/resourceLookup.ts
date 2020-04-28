@@ -105,13 +105,15 @@ export enum ResourceKey {
 	TRANSACTION_UNABLE_TO_DELETE = "0010010",
 	/** Unable to retrieve transaction listing. */
 	TRANSACTION_UNABLE_TO_QUERY = "0010011",
+	/** Unable to finish transaction. */
+	TRANSACTION_UNABLE_TO_CHECKOUT = "0010012",
 	// End database - transaction
 	
 	// General - transaction
 	/** The provided transaction record ID is not valid. */
-	TRANASCTION_RECORD_ID_INVALID = "0105001",
+	TRANSACTION_RECORD_ID_INVALID = "0105001",
 	/** The provided transaction cashier ID is not valid. */
-	TRANASCTION_CASHIER_ID_INVALID = "0105002",
+	TRANSACTION_CASHIER_ID_INVALID = "0105002",
 	/** Please provide a valid total. */
 	TRANSACTION_TOTAL_INVALID = "0105003",
 	/** The provided transaction type is not valid. */

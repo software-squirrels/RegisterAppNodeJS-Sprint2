@@ -13,10 +13,10 @@ export interface ProductSaveRequest {
 
 export interface TransactionSaveRequest {
 	id?: string;
-	cashierId: number;
 	total: number;
-	transactionType: string;
-	transactionReferenceId: number;
+	cashierId: string;
+	transactionType: number;
+	transactionReferenceId: string;
 }
 
 export interface TransactionEntrySaveRequest {
@@ -74,18 +74,20 @@ export interface EmployeeType {
 
 export interface TransactionEntryListing {
 	id: string;
-	transactionId: string;
-	productId: string;
-	quantity: number;
 	price: number;
+	quantity: number;
+	createdOn: string;
+	productId: string;
+	transactionId: string;
 }
 
 export interface TransactionListing {
 	id: string;
-	cashierId: number;
 	total: number;
-	transactionType: string;
-	transactionReferenceId: number;
+	cashierId: string;
+	createdOn: string;
+	transactionType: number;
+	transactionReferenceId: string;
 }
 // End response data object definitions
 
@@ -119,11 +121,11 @@ export interface ProductListingPageResponse extends PageResponse {
 }
 
 export interface TransactionPageResponse extends PageResponse {
-	products: Product[];	//Change to transaction entries
+	transactions: TransactionListing[];	//Change to transaction entries
 }
 
 export interface CheckoutPageResponse extends PageResponse {
-	products: Product[];	//Change to transaction entries
+	transactions: TransactionListing[];	//Change to transaction entries
 }
 // End page response data
 
@@ -135,6 +137,10 @@ export interface ApiResponse {
 
 export interface ProductSaveResponse extends ApiResponse {
 	product: Product;
+}
+
+export interface TransactionSaveResponse extends ApiResponse {
+	transaction: TransactionListing;
 }
 
 export interface EmployeeSaveResponse extends ApiResponse {
