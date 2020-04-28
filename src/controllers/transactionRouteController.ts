@@ -1,10 +1,14 @@
 import { Request, Response } from "express";
 import { Resources, ResourceKey } from "../resourceLookup";
-import { TransactionPageResponse, TransactionListing, CommandResponse, ActiveUser, Product, ProductListingPageResponse } from "./typeDefinitions";
+import { TransactionPageResponse, TransactionEntry, CommandResponse, ActiveUser, Product, ProductListingPageResponse } from "./typeDefinitions";
 import * as Helper from "./helpers/routeControllerHelper";
 import * as ProductsQuery from "./commands/products/productsQuery";
 import * as ValidateActiveUser from "./commands/activeUsers/validateActiveUserCommand";
 import { ViewNameLookup } from "./lookups/routingLookup";
+import * as TransactionEntryCreateCommand from "./commands/transactionEntries/transactionEntryCreateCommand";
+import * as TransactionEntryUpdateCommand from "./commands/transactionEntries/transactionEntryUpdateCommand";
+import * as TransactionEntryQuery from "./commands/transactionEntries/transactionEntryQuery";
+import { v1 as uuidv1 } from 'uuid';
 
 const processStartTransactionError = (error: any, res: Response): void => {
 	if (Helper.processStartError(error, res)) {
@@ -40,7 +44,7 @@ export const start = async (req: Request, res: Response): Promise<void> => {
 		return res.render(ViewNameLookup.Transaction,
 		<TransactionPageResponse>{
 			products: productsCommandResponse.data,
-			employeeId: activeUserResponse.data!.id
+			transactionId: uuidv1()
 		});
 	}).catch((error: any): void => {
 		return processStartTransactionError(error, res);
@@ -48,7 +52,7 @@ export const start = async (req: Request, res: Response): Promise<void> => {
 };
 
 export const checkTransactionEntry = async (req: Request, res: Response): Promise<void> => {
-	return QueryTransactionEntry.execute((<Express.Session>req.session).id)
+	return TransactionEntryQuery.queryById(req.body.referenceId)
 	.then((): void => {
 		res.sendStatus(200);
 	}).catch((): void => {
@@ -57,11 +61,31 @@ export const checkTransactionEntry = async (req: Request, res: Response): Promis
 };
 
 export const createTransactionEntry = async (req: Request, res: Response): Promise<void> => {
-	return;
-	// return CreateTransactionEntry.execute(req.body)
-}
+	return TransactionEntryCreateCommand.execute(req.body)
+	.then((saveTransactionEntryCommandResponse: CommandResponse<void>) => {
+		res.status(saveTransactionEntryCommandResponse.status);
+	}).catch((error: any): void => {
+		return Helper.processApiError(
+			error,
+			res,
+			<Helper.ApiErrorHints>{
+				defaultErrorMessage: Resources.getString(
+					ResourceKey.TRANSACTION_UNABLE_TO_SAVE)
+			});
+	});
+};
 
 export const updateTransactionEntry = async (req: Request, res: Response): Promise<void> => {
-	return;
-	// return saveTransactionEntry(req, res, TransactionEntryUpdateCommand.execute);
-}
+	return TransactionEntryUpdateCommand.execute(req.body)
+	.then((saveTransactionEntryCommandResponse: CommandResponse<void>) => {
+		res.status(saveTransactionEntryCommandResponse.status);
+	}).catch((error: any): void => {
+		return Helper.processApiError(
+			error,
+			res,
+			<Helper.ApiErrorHints>{
+				defaultErrorMessage: Resources.getString(
+					ResourceKey.TRANSACTION_UNABLE_TO_SAVE)
+			});
+	});
+};
