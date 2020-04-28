@@ -17,7 +17,6 @@ const validateSaveRequest = (saveTransactionRequest: TransactionSaveRequest): Co
 	
 	} else if (Helper.isBlankString(saveTransactionRequest.cashierId)) {
 		errorMessage = Resources.getString(ResourceKey.TRANSACTION_CASHIER_ID_INVALID);
-	
 	} else if ((saveTransactionRequest.total == null)
 		|| isNaN(saveTransactionRequest.total)) {
 

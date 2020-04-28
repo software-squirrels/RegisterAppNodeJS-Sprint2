@@ -95,7 +95,7 @@ export enum ResourceKey {
 	/** Please provide a valid employee ID. */
 	EMPLOYEE_EMPLOYEE_ID_INVALID = "0104007",
 	// End general - employee
-	
+
 	// Database - transaction
 	/** transaction was not found. */
 	TRANSACTION_NOT_FOUND = "0010008",
@@ -108,7 +108,7 @@ export enum ResourceKey {
 	/** Unable to finish transaction. */
 	TRANSACTION_UNABLE_TO_CHECKOUT = "0010012",
 	// End database - transaction
-	
+
 	// General - transaction
 	/** The provided transaction record ID is not valid. */
 	TRANSACTION_RECORD_ID_INVALID = "0105001",
