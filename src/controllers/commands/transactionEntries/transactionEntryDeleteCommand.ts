@@ -1,32 +1,27 @@
 import Sequelize from "sequelize";
-import * as Helper from "../helpers/helper";
-import { TransactionModel } from "../models/transactionModel";
+import { TransactionEntryModel } from "../models/transactionEntryModel";
 import { CommandResponse } from "../../typeDefinitions";
-import * as TransactionRepository from "../models/transactionModel";
-import { Resources, ResourceKey } from "../../../resourceLookup";
+import * as TransactionEntryRepository from "../models/transactionEntryModel";
 import * as DatabaseConnection from "../models/databaseConnection";
+import { Resources, ResourceKey } from "../../../resourceLookup";
 
 export const execute = async (transactionId?: string): Promise<CommandResponse<void>> => {
-	if (Helper.isBlankString(transactionId)) {
-		return <CommandResponse<void>>{ status: 204 };
-	}
-
 	let deleteTransaction: Sequelize.Transaction;
 
 	return DatabaseConnection.createTransaction()
-		.then((createdTransaction: Sequelize.Transaction): Promise<TransactionModel | null> => {
+		.then((createdTransaction: Sequelize.Transaction): Promise<TransactionEntryModel | null> => {
 			deleteTransaction = createdTransaction;
 
-			return TransactionRepository.queryById(
+			return TransactionEntryRepository.queryById(
 				<string>transactionId,
 				deleteTransaction);
-		}).then((queriedTransaction: (TransactionModel | null)): Promise<void> => {
-			if (queriedTransaction == null) {
+		}).then((queriedTransactionEntry: (TransactionEntryModel | null)): Promise<void> => {
+			if (queriedTransactionEntry == null) {
 				return Promise.resolve();
 			}
 
-			return queriedTransaction.destroy(
-				<Sequelize.InstanceDestroyOptions>{
+			return queriedTransactionEntry.destroy(
+				<Sequelize.DestroyOptions>{
 					transaction: deleteTransaction
 				});
 		}).then((): CommandResponse<void> => {

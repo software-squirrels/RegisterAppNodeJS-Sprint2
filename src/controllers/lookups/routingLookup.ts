@@ -5,7 +5,8 @@ export enum ParameterLookup {
 
 export enum QueryParameterLookup {
 	ErrorCode = "errorCode",
-	EmployeeId = "employeeId"
+	EmployeeId = "employeeId",
+	TransactionId = "transactionId"
 }
 
 export enum ViewNameLookup {

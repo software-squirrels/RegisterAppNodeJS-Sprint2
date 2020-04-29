@@ -105,6 +105,8 @@ export enum ResourceKey {
 	TRANSACTION_UNABLE_TO_DELETE = "0010010",
 	/** Unable to retrieve transaction listing. */
 	TRANSACTION_UNABLE_TO_QUERY = "0010011",
+	/** Unable to finish transaction. */
+	TRANSACTION_UNABLE_TO_CHECKOUT = "0010012",
 	// End database - transaction
 
 	// General - transaction

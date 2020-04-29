@@ -1,13 +1,12 @@
-import * as Helper from "../../helpers/helper";
-import { TransactionListing } from "../../../typeDefinitions";
+import { Transaction } from "../../../typeDefinitions";
 import { TransactionModel } from "../../models/transactionModel";
 
-export const mapTransactionData = (queriedTransaction: TransactionModel): TransactionListing => {
-	return <TransactionListing>{
+export const mapTransactionData = (queriedTransaction: TransactionModel): Transaction => {
+	return <Transaction>{
 		id: queriedTransaction.id,
 		cashierId: queriedTransaction.cashierId,
 		total: queriedTransaction.total,
-		transactionType: queriedTransaction.type,
-		transactionReferenceId: queriedTransaction.referenceId
+		type: queriedTransaction.type,
+		referenceId: queriedTransaction.referenceId
 	};
 };

@@ -3,53 +3,26 @@ import { TransactionModel } from "../models/transactionModel";
 import * as TransactionHelper from "./helpers/transactionHelper";
 import * as TransactionRepository from "../models/transactionModel";
 import { Resources, ResourceKey } from "../../../resourceLookup";
-import { CommandResponse, TransactionListing } from "../../typeDefinitions";
+import { CommandResponse, Transaction } from "../../typeDefinitions";
 
-export const queryById = async (transactionId?: string): Promise<CommandResponse<TransactionListing>> => {
+export const queryById = async (transactionId?: string): Promise<CommandResponse<Transaction>> => {
 	if (Helper.isBlankString(transactionId)) {
-		return Promise.reject(<CommandResponse<TransactionListing>>{
+		return Promise.reject(<CommandResponse<Transaction>>{
 			status: 422,
 			message: Resources.getString(ResourceKey.TRANSACTION_RECORD_ID_INVALID)
 		});
 	}
 
 	return TransactionRepository.queryById(<string>transactionId)
-		.then((queriedTransaction: (TransactionModel | null)): Promise<CommandResponse<TransactionListing>> => {
+		.then((queriedTransaction: (TransactionModel | null)): Promise<CommandResponse<Transaction>> => {
 			if (queriedTransaction == null) {
-				return Promise.reject(<CommandResponse<TransactionListing>>{
+				return Promise.reject(<CommandResponse<Transaction>>{
 					status: 404,
 					message: Resources.getString(ResourceKey.TRANSACTION_NOT_FOUND)
 				});
 			}
 
-			return Promise.resolve(<CommandResponse<TransactionListing>>{
-				status: 200,
-				data: TransactionHelper.mapTransactionData(queriedTransaction)
-			});
-		});
-};
-
-export const queryByCasherId = async (
-	productCasherId?: string
-): Promise<CommandResponse<TransactionListing>> => {
-
-	if (Helper.isBlankString(productCasherId)) {
-		return Promise.reject(<CommandResponse<TransactionListing>>{
-			status: 422,
-			message: Resources.getString(ResourceKey.TRANSACTION_LOOKUP_CODE_INVALID)
-		});
-	}
-
-	return TransactionRepository.queryByLookupCode(<string>productCasherId)
-		.then((queriedTransaction: (TransactionModel | null)): Promise<CommandResponse<TransactionListing>> => {
-			if (queriedTransaction == null) {
-				return Promise.reject(<CommandResponse<TransactionListing>>{
-					status: 404,
-					message: Resources.getString(ResourceKey.TRANSACTION_NOT_FOUND)
-				});
-			}
-
-			return Promise.resolve(<CommandResponse<TransactionListing>>{
+			return Promise.resolve(<CommandResponse<Transaction>>{
 				status: 200,
 				data: TransactionHelper.mapTransactionData(queriedTransaction)
 			});

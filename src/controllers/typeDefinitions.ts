@@ -13,10 +13,10 @@ export interface ProductSaveRequest {
 
 export interface TransactionSaveRequest {
 	id?: string;
-	cashierId: number;
+	type: number;
 	total: number;
-	type: string;
-	referenceId: number;
+	cashierId: string;
+	referenceId: string;
 }
 
 export interface TransactionEntrySaveRequest {
@@ -126,7 +126,7 @@ export interface TransactionPageResponse extends PageResponse {
 }
 
 export interface CheckoutPageResponse extends PageResponse {
-	products: Product[];
+	transactionEntries: TransactionEntry[];
 }
 // End page response data
 
@@ -140,12 +140,16 @@ export interface ProductSaveResponse extends ApiResponse {
 	product: Product;
 }
 
-export interface EmployeeSaveResponse extends ApiResponse {
-	employee: Employee;
+export interface TransactionSaveResponse extends ApiResponse {
+	transaction: Transaction;
 }
 
 export interface TransactionEntrySaveResponse extends ApiResponse {
 	transactionEntry: TransactionEntry;
+}
+
+export interface EmployeeSaveResponse extends ApiResponse {
+	employee: Employee;
 }
 // End API response data
 // End response object definitions

@@ -75,3 +75,9 @@ export const queryByCashierId = async (
 		where: <Sequelize.WhereAttributeHash>{ cashierId: cashierId}
 	});
 };
+
+export const queryAll = async (): Promise<TransactionModel[]> => {
+	return TransactionModel.findAll(<Sequelize.FindOptions>{
+		order: [ [ TransactionFieldName.CreatedOn, "ASC" ] ]
+	});
+};

@@ -1,16 +1,14 @@
 import { TransactionModel } from "../models/transactionModel";
 import * as TransactionHelper from "./helpers/transactionHelper";
 import * as TransactionRepository from "../models/transactionModel";
-import { CommandResponse, TransactionListing } from "../../typeDefinitions";
+import { CommandResponse, Transaction } from "../../typeDefinitions";
 
-export const query = async (): Promise<CommandResponse<TransactionListing[]>> => {
+export const query = async (): Promise<CommandResponse<Transaction[]>> => {
 	return TransactionRepository.queryAll()
-		.then((queriedTransaction: TransactionModel[]): CommandResponse<TransactionListing[]> => {
-			return <CommandResponse<TransactionListing[]>>{
+		.then((queriedTransaction: TransactionModel[]): CommandResponse<Transaction[]> => {
+			return <CommandResponse<Transaction[]>>{
 				status: 200,
-				data: queriedTransaction.map<TransactionListing>((queriedTransactions: TransactionModel) => {
-					return TransactionHelper.mapTransactionData(queriedTransactions);
-				})
+				data: queriedTransaction.map(transaction => TransactionHelper.mapTransactionData(transaction))
 			};
-		});
+	});
 };
