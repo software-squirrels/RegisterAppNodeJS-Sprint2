@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import { Resources, ResourceKey } from "../resourceLookup";
-import { TransactionPageResponse, CommandResponse, ActiveUser, TransactionListing } from "./typeDefinitions";
+import { TransactionPageResponse, CommandResponse, ActiveUser, TransactionListing, Product } from "./typeDefinitions";
 import * as Helper from "./helpers/routeControllerHelper";
+import * as ProductsQuery from "./commands/products/productsQuery";
 import * as TransactionsQuery from "./commands/transactions/transactionsQuery";
 import * as ValidateActiveUser from "./commands/activeUsers/validateActiveUserCommand";
 import { ViewNameLookup } from "./lookups/routingLookup";
@@ -30,14 +31,21 @@ export const start = async (req: Request, res: Response): Promise<void> => {
 		return;
 	}
 
-	let activeUserResponse: CommandResponse<ActiveUser>;
+	let transactionEntries: TransactionListing[];
+
 	return ValidateActiveUser.execute((<Express.Session>req.session).id)
 	.then((): Promise<CommandResponse<TransactionListing[]>> => {
 		return TransactionsQuery.query();
-	}).then((transactionsCommandResponse: CommandResponse<TransactionListing[]>): void => {
+	}).then((transactionsCommandResponse: CommandResponse<TransactionListing[]>): Promise<CommandResponse<Product[]>> => {
+		transactionEntries = <TransactionListing[]>transactionsCommandResponse.data;
+
+		return ProductsQuery.query();
+	}).then((productsCommandResponse: CommandResponse<Product[]>): void => {
+		
 		return res.render(ViewNameLookup.Transaction,
 		<TransactionPageResponse>{
-			transactions: transactionsCommandResponse.data
+			products: productsCommandResponse.data,
+			transactions: transactionEntries
 		});
 	}).catch((error: any): void => {
 		return processStartTransactionError(error, res);

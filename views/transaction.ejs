@@ -25,6 +25,29 @@
 			</h4>
 		</div>
 
+		<div class="productsWrapper">
+			<input id="search" type="text" placeholder="Search..." />
+			<br />
+			<br />
+
+			<% if (locals.products && (locals.products.length > 0)) { %>
+				<ul id="productsListing" class="products">
+					<% locals.products.forEach((product) => { %>
+						<li>
+							<input type="hidden" name="productId" value="<%= product.id %>" />
+							<span class="productLookupCodeDisplay"><%= product.lookupCode %></span>
+							<br />&nbsp;&nbsp;<span name="productCount"><%= product.count %></span>
+							<br />&nbsp;&nbsp;<span name="productCreatedOn"><%= product.createdOn %></span>
+						</li>
+					<% }); %>
+				</ul>
+			<% } %>
+		</div>
+
+		<br />
+		<hr />
+		<br />
+
 		<div class="transactionWrapper">
 			<br />
 			<br />
@@ -49,22 +72,17 @@
 			Transaction Date
 			-->
 
-			<% if (locals.products && (locals.products.length > 0)) { %>
-				<ul id="transactionEntries" class="products">
-					<% locals.products.forEach((product) => { %>
-						<li>
-							<input type="hidden" name="productId" value="<%= product.id %>" />
-							<br />&nbsp;&nbsp;<span name="productCount"><%= product.count %></span>
-							<!--
-							Price
-							Transaction Date
-							-->
-						</li>
-					<% }); %>
-				</ul>
-			<% } %>
+			<ul id="transactionEntries" class="products">
+			</ul>
 		</div>
 
+		<br />
+		<br />
+		<button id="cancelCartAction" type="button" class="action">Cancel</button>
+		<br />
+		<br />
+		<button id="completeCartAction" type="button" class="action">Complete</button>
+	
 		<div class="hidden">
 			<input type="checkbox" id="isRefreshed" class="hidden">
 			<script type="text/javascript">
