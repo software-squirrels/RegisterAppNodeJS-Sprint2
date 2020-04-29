@@ -38,3 +38,11 @@
 a.button {
 	text-decoration: none;
 }
+
+li.hidden {
+	display: none;
+}
+
+input.quantityUpdate {
+	width: 40px;
+}

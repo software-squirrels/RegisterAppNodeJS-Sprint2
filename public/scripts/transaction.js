@@ -72,14 +72,18 @@ function areArgsValid(mainString, targetStrings) {
 },{}],2:[function(require,module,exports){
 var stringSimilarity = require('string-similarity');
 document.addEventListener("DOMContentLoaded", () => {
-	const productListElements = document.getElementById("productsListing").children;
-	const search = document.getElementsByName("search")[0];
+	const productListingElement = document.getElementById("productsListing");
+	if (productListingElement != null) {
+		const productListElements = productListingElement.children;
 
-	for (let i = 0; i < productListElements.length; i++) {
-		productListElements[i].querySelector('span[class="add"]').addEventListener("click", productAdd);
+		for (let i = 0; i < productListElements.length; i++) {
+			productListElements[i].addEventListener("click", addToCart);
+		}
 	}
 
-	search.addEventListener("input", productSearch);
+	document.getElementById("search").addEventListener("keypress", productSearch);
+
+	// TODO: Cancel and complete button clicks
 });
 
 function findClickedListItemElement(clickedTarget) {
@@ -101,6 +105,63 @@ function findClickedListItemElement(clickedTarget) {
 	}
 }
 
+function onCartItemClicked(event) {
+	if ((event.target.tagName.toLowerCase() === "input")
+		&& (event.target.name === "productQuantity")) {
+
+		return;
+	}
+	const listItem = findClickedListItemElement(event.target);
+
+	listItem.parentElement.removeChild(listItem);
+}
+
+function addToCart(event) {
+	let i = 0;
+	const listItem = findClickedListItemElement(event.target);
+	const clickedProductId = listItem.querySelector("input[name='productId']").value;
+	const transactionEntryListElement = document.getElementById("transactionEntries");
+	const existingCartProductElements = transactionEntryListElement.children;
+
+	for (; i < existingCartProductElements.length; i++) {
+		const existingCartProductId = existingCartProductElements[i].querySelector("input[name='productId']").value;
+
+		if (clickedProductId !== existingCartProductId) {
+			continue;
+		}
+
+		const productQuantityElement = existingCartProductElements[i].querySelector("input[name='productQuantity']");
+		productQuantityElement.value = (Number(productQuantityElement.value) + 1).toString();
+
+		return;
+	}
+
+	const listItemElement = document.createElement("li");
+	listItemElement.addEventListener("click", onCartItemClicked);
+	transactionEntryListElement.appendChild(listItemElement);
+
+	const productIdElement = document.createElement("input");
+	productIdElement.type = "hidden";
+	productIdElement.name = "productId";
+	productIdElement.value = listItem.querySelector("input[name='productId']").value;
+	listItemElement.appendChild(productIdElement);
+
+	const productLookupcodeElement = document.createElement("span");
+	productLookupcodeElement.classList.add("productLookupCodeDisplay");
+	productLookupcodeElement.innerHTML = listItem.querySelector("span.productLookupCodeDisplay").innerHTML;
+	listItemElement.appendChild(productLookupcodeElement);
+
+	listItemElement.appendChild(document.createElement("br"));
+	listItemElement.appendChild(document.createTextNode("\u00A0\u00A0"));
+
+	const quantityElement = document.createElement("input");
+	quantityElement.type = "number";
+	quantityElement.name = "productQuantity";
+	quantityElement.value = "1";
+	quantityElement.classList.add("quantityUpdate");
+    listItemElement.appendChild(quantityElement);
+}
+
 function productAdd(event) {
 	let listItem = findClickedListItemElement(event.target);
 	// Ajax post/patch
@@ -108,19 +169,31 @@ function productAdd(event) {
 }
 
 function productSearch(event) {
-	const productListElements = document.getElementById("productsListing").children;
+	if (event.which !== 13) { // ENTER/RETURN key
+		return;
+	}
+
+	const productListingElement = document.getElementById("productsListing");
+	if (productListingElement == null) {
+		return;
+	}
+
+	const productListElements = productListingElement.children;
 
 	for (let i = 0; i < productListElements.length; i++) {
-		if (event.target.value === "") {
-			productListElements[i].style.display = "block";
-		}
-		else if (stringSimilarity.compareTwoStrings(event.target.value.toLowerCase(), productListElements[i].querySelector('span[name="productLookupCode"]').innerHTML.toLowerCase()) < .6) {
-			productListElements[i].style.display = "none";
-		}
-		else {
-			productListElements[i].style.display = "block";
-		}
+		const lookupCode = productListElements[i]
+			.querySelector("span.productLookupCodeDisplay")
+			.innerHTML;
 
+		if (lookupCode.toLowerCase().indexOf(event.target.value.toLowerCase()) >= 0) {
+			if (productListElements[i].classList.contains("hidden")) {
+				productListElements[i].classList.remove("hidden");
+			}
+		} else {
+			if (!productListElements[i].classList.contains("hidden")) {
+				productListElements[i].classList.add("hidden");
+			}
+		}
 	}
 }
 
