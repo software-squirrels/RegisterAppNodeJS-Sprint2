@@ -20,7 +20,7 @@
   "license": "MIT",
   "scripts": {
     "rebuild": "npm run clean && npm run build",
-    "build": "npm run build-ts && npm run tslint",
+    "build": "npm run build-ts",
     "start": "node dist/server.js",
     "clean": "rimraf dist",
     "build-ts": "tsc",

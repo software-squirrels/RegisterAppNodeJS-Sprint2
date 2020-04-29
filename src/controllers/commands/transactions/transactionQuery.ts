@@ -28,30 +28,3 @@ export const queryById = async (transactionId?: string): Promise<CommandResponse
 			});
 		});
 };
-
-export const queryByCashierId = async (
-	transactionCashierId?: string
-): Promise<CommandResponse<TransactionListing>> => {
-
-	if (Helper.isBlankString(transactionCashierId)) {
-		return Promise.reject(<CommandResponse<TransactionListing>>{
-			status: 422,
-			message: Resources.getString(ResourceKey.TRANSACTION_CASHIER_ID_INVALID)
-		});
-	}
-
-	return TransactionRepository.queryByCashierId(<string>transactionCashierId)
-		.then((queriedTransaction: (TransactionModel | null)): Promise<CommandResponse<TransactionListing>> => {
-			if (queriedTransaction == null) {
-				return Promise.reject(<CommandResponse<TransactionListing>>{
-					status: 404,
-					message: Resources.getString(ResourceKey.TRANSACTION_NOT_FOUND)
-				});
-			}
-
-			return Promise.resolve(<CommandResponse<TransactionListing>>{
-				status: 200,
-				data: TransactionHelper.mapTransactionData(queriedTransaction)
-			});
-		});
-};

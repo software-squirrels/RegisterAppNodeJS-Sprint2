@@ -44,14 +44,15 @@ export const start = async (req: Request, res: Response): Promise<void> => {
 	});
 };
 
-export const checkTransactionEntry = async (req: Request, res: Response): Promise<void> => {
-	return QueryTransactionEntry.execute((<Express.Session>req.session).id)
-	.then((): void => {
-		res.sendStatus(200);
-	}).catch((): void => {
-		res.sendStatus(404);
-	});
-};
+// TODO: Professor Phillips. I commented this out because it isn't being used anywhere at the moment.
+// export const checkTransactionEntry = async (req: Request, res: Response): Promise<void> => {
+// 	return QueryTransactionEntry.execute((<Express.Session>req.session).id)
+// 	.then((): void => {
+// 		res.sendStatus(200);
+// 	}).catch((): void => {
+// 		res.sendStatus(404);
+// 	});
+// };
 
 export const createTransactionEntry = async (req: Request, res: Response): Promise<void> => {
 	return;
