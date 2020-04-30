@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	document.getElementById("updateButton")
         .addEventListener("click", updateTotalCost);
 	
-	document.getElementById("search").addEventListener("keypress", productSearch);
+	//document.getElementById("search").addEventListener("keypress", productSearch);
 	
 	// TODO: Back and Finalize button clicks
 	getBackActionElement().addEventListener(
@@ -20,7 +20,7 @@ function productSearch(event) {
 		return;
 	}
 
-	const productListingElement = document.getElementById("productsListing");
+	const productListingElement = document.getElementById("TransactionListing");
 	if (productListingElement == null) {
 		return;
 	}

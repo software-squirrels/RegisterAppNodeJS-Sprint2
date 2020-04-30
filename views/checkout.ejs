@@ -32,7 +32,7 @@
 			<br />
 			<br />
 			
-			<input type="search" name="search" id="search" placeholder="Search"/>
+			<!--<input type="search" name="search" id="search" placeholder="Search"/>-->
 			
 			<!--
 			I'll leave in the search functionality for checkout
@@ -69,7 +69,11 @@
 						<% totalPrice += product.price%>
 						<% totalQuantity += product.quantity%>
 					<% }); %>
+					<br />
+					<br />
 					<span name="Total Checkout Price:">Total Checkout Price: <%= totalPrice %></span>
+					<br />
+					<br />
 					<span name="Total Checkout Price:">Total Quantity: <%= totalQuantity %></span>
 					<!--<label for="totalQuantity">Total Quantity:</label>
 					<input id="totalQuantity" type="text" value="" class="update"/>-->
