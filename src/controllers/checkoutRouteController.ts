@@ -8,6 +8,7 @@ import { ViewNameLookup, RouteLookup, QueryParameterLookup, ParameterLookup } fr
 import * as TransactionUpdateCommand from "./commands/transactions/transactionUpdateCommand";
 import * as EmployeeSignIn from "./commands/employees/employeeSignInCommand";
 import * as EmployeeHelper from "./commands/employees/helpers/employeeHelper";
+import * as ProductsQuery from "./commands/products/productsQuery";
 
 const processStartTransactionError = (error: any, res: Response): void => {
 	if (Helper.processStartError(error, res)) {
@@ -25,6 +26,7 @@ const processStartTransactionError = (error: any, res: Response): void => {
 			ViewNameLookup.Checkout,
 			<CheckoutPageResponse>{
 				transactionEntries: [],
+				products: [],
 				errorMessage: (error.message
 					|| Resources.getString(ResourceKey.TRANSACTION_UNABLE_TO_QUERY))
 			});
@@ -35,16 +37,19 @@ export const start = async (req: Request, res: Response): Promise<void> => {
 		return;
 	}
 
-	return ValidateActiveUser.execute((<Express.Session>req.session).id)
-	.then((): Promise<CommandResponse<TransactionEntry[]>> => {
-		return TransactionEntriesQuery.query(req.query[QueryParameterLookup.TransactionId]);
-	}).then((transactionCommandResponse: CommandResponse<TransactionEntry[]>): void => {
-		return res.render(ViewNameLookup.Checkout,
-		<CheckoutPageResponse>{
-			transactionEntries: transactionCommandResponse.data
-		});
-	}).catch((error: any): void => {
-		return processStartTransactionError(error, res);
+	await ValidateActiveUser.execute((<Express.Session>req.session).id);
+	const transactionCommandResponse = (await TransactionEntriesQuery.query(req.query[QueryParameterLookup.TransactionId])).data;
+	const products = (await ProductsQuery.query()).data;
+	const productMap: any = {};
+	products?.forEach(product => productMap[product.id] = product.lookupCode);
+	const items = transactionCommandResponse?.map((item: any) => {
+		item.lookupCode = productMap[item.productId];
+		return item;
+	});
+	console.log(items);
+	res.render(ViewNameLookup.Checkout, <CheckoutPageResponse>{
+		transactionEntries: items,
+		products: products
 	});
 };
 
