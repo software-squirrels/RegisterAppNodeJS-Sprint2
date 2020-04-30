@@ -36,14 +36,17 @@ export const start = async (req: Request, res: Response): Promise<void> => {
 		return;
 	}
 
+	let activeUserResponse: CommandResponse<ActiveUser>;
 	return ValidateActiveUser.execute((<Express.Session>req.session).id)
-	.then((): Promise<CommandResponse<Product[]>> => {
+	.then((activeUserCommandResponse: CommandResponse<ActiveUser>): Promise<CommandResponse<Product[]>> => {
+		activeUserResponse = activeUserCommandResponse;
 		return ProductsQuery.query();
 	}).then((productsCommandResponse: CommandResponse<Product[]>): void => {
 		return res.render(ViewNameLookup.Transaction,
 		<TransactionPageResponse>{
 			products: productsCommandResponse.data,
-			transactionId: uuidv1()
+			transactionId: uuidv1(),
+			employeeId: activeUserResponse.data!.id
 		});
 	}).catch((error: any): void => {
 		return processStartTransactionError(error, res);
@@ -52,6 +55,7 @@ export const start = async (req: Request, res: Response): Promise<void> => {
 
 export const checkTransactionEntry = async (req: Request, res: Response): Promise<void> => {
 	return TransactionEntryQuery.queryById(req.body.referenceId)
+	//return QueryTransactionEntry.execute((<Express.Session>req.session).id)
 	.then((): void => {
 		res.sendStatus(200);
 	}).catch((): void => {
@@ -88,3 +92,7 @@ export const updateTransactionEntry = async (req: Request, res: Response): Promi
 			});
 	});
 };
+
+// export const updateTransactionEntry = async (req: Request, res: Response): Promise<void> => {
+// 	return saveTransactionEntry(req, res, TransactionEntryUpdateCommand.execute);
+// }

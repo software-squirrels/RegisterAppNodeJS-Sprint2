@@ -33,7 +33,7 @@
 			<br />
 
 			<input type="hidden" name="transactionId" value="<%= locals.transactionId %>"/>
-			<input type="search" name="search" placeholder="Search"/>
+			<input type="search" name="search" id="search" placeholder="Search"/>
 
 			<% if (locals.products && (locals.products.length > 0)) { %>
 				<ul id="productsListing" class="products">
@@ -44,7 +44,8 @@
 							<br />&nbsp;&nbsp;<span name="price">Price: $<%= product.price %></span>
 							<br />&nbsp;&nbsp;<label for="quantity">Quantity: </label>
   							<input type="number" min="0" max="999" name="quantity">
-							<span class="add">Add</span>
+							<!--<span class="add">Add</span>-->
+							<span class="add" style="float: right;">Add</span>
 						</li>
 					<% }); %>
 				</ul>

@@ -1,6 +1,6 @@
-import { TransactionEntryModel } from "../models/TransactionEntryModel";
-import * as TransactionEntryHelper from "./helpers/TransactionEntryHelper";
-import * as TransactionEntryRepository from "../models/TransactionEntryModel";
+import { TransactionEntryModel } from "../models/transactionEntryModel";
+import * as TransactionEntryHelper from "./helpers/transactionEntryHelper";
+import * as TransactionEntryRepository from "../models/transactionEntryModel";
 import { CommandResponse, TransactionEntry } from "../../typeDefinitions";
 
 export const query = async (transactionId: string): Promise<CommandResponse<TransactionEntry[]>> => {

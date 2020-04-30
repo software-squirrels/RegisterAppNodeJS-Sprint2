@@ -23,7 +23,7 @@ TransactionEntryModel.init(
 		},
 		price: <ModelAttributeColumnOptions>{
 			field: TransactionEntryFieldName.Price,
-			type: DataTypes.BIGINT,
+			type: DataTypes.DECIMAL(10, 2),
 			allowNull: true
 		},
 		quantity: <ModelAttributeColumnOptions>{
