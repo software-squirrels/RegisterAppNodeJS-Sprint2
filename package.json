@@ -29,6 +29,7 @@
     "postinstall": "npm run rebuild"
   },
   "dependencies": {
+    "@types/uuid": "^7.0.3",
     "bcrypt-nodejs": "^0.0.3",
     "bluebird": "^3.7.1",
     "body-parser": "^1.19.0",

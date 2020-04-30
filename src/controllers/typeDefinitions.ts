@@ -127,7 +127,7 @@ export interface TransactionPageResponse extends PageResponse {
 
 export interface CheckoutPageResponse extends PageResponse {
 	transactionEntries: TransactionEntry[];
-	//transactionId: string;
+	// transactionId: string;
 }
 // End page response data
 

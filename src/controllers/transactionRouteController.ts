@@ -55,7 +55,7 @@ export const start = async (req: Request, res: Response): Promise<void> => {
 
 export const checkTransactionEntry = async (req: Request, res: Response): Promise<void> => {
 	return TransactionEntryQuery.queryById(req.body.referenceId)
-	//return QueryTransactionEntry.execute((<Express.Session>req.session).id)
+	// return QueryTransactionEntry.execute((<Express.Session>req.session).id)
 	.then((): void => {
 		res.sendStatus(200);
 	}).catch((): void => {
