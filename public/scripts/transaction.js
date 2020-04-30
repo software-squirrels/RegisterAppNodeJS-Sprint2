@@ -11,6 +11,14 @@ document.addEventListener("DOMContentLoaded", () => {
 	document.getElementById("search").addEventListener("keypress", productSearch);
 
 	// TODO: Cancel and complete button clicks
+	getCancelCartActionElement().addEventListener(
+		"click",
+		() => { window.location.assign("/mainmenu"); });
+
+	getCompleteCartActionElement().addEventListener(
+		"click",
+		() => { window.location.assign("/checkout"); });
+
 });
 
 async function addToCart(event) {
@@ -58,4 +66,13 @@ function productSearch(event) {
 			productListElements[i].style.display = "block";
 		}
 	}
+}
+
+//Getters and Setters
+function getCancelCartActionElement() {
+	return document.getElementById("cancelCartAction");
+}
+
+function getCompleteCartActionElement() {
+	return document.getElementById("completeCartAction");
 }
