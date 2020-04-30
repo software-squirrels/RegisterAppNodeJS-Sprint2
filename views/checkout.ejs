@@ -44,11 +44,14 @@
 						<li>
 							<input type="hidden" name="productId" value="<%= product.productId %>" />
 							<span name="productLookupCode"><%= product.lookupCode %></span>
+							<button id="deletebutton" type="button" style="float: right;" class="deletebutton">X</button>
 							<br />&nbsp;&nbsp;<span name="price">Price: $<%= product.price %></span>
 							<br />&nbsp;&nbsp;<label for="quantity">Quantity: </label>
   							<input type="number" placeholder="<%= product.quantity %>" min="0" max="999" name="quantity">
+							<br />
 							<!--<span class="add">Add</span>-->
 							<!--<span class="update" style="float: right;">Update</span>-->
+							<!--<button id="deletebutton" type="button" class="deletebutton">Delete</button>-->
 						</li>
 					<% }); %>
 				</ul>
