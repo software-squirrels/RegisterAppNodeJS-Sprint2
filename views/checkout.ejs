@@ -1,0 +1,79 @@
+
+<html>
+    <head>
+
+        <title>Checkout</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/styles/master.css">
+
+        <script type="text/javascript" src="/scripts/master.js" defer></script>4
+    </head>
+    <body>
+        <div class = "header">
+            <h1 class = "primary-message">Checkout</h1>
+        </div>
+
+		<div id="main" class="main">
+			<div id="error" <% if (!locals.errorMessage || (locals.errorMessage === "")) { %> class="hidden" <% } %>>
+				<h4 id="errorMessage" class="error-message">
+					<% if (locals.errorMessage && (locals.errorMessage !== "")) { %>
+						<%= locals.errorMessage %>
+					<% } %>
+				</h4>
+			</div>
+
+			<div class = "inputContent">
+				<table id="transactionDetails">
+					<tbody>
+						<tr>
+							<td class="label">Transaction ID:</td>
+							<td>
+								<input id="transactionID" type="text" value="" class="update"/>
+							</td>
+						</tr>
+						<tr>
+							<td class="label">Count:</td>
+							<td>
+								<input id="transactionCount" type="text" value="" class="update"/>
+							</td>
+						</tr>
+						<tr>
+							<td class="label">Price:</td>
+							<td>
+								<input id="transactionPrice" type="text" value="" class="update"/>
+							</td>
+						</tr>
+						<tr>
+							<td class="label">Transaction Date:</td>
+							<td>
+								<input id="transactionDate" type="text" value="" class="update"/>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<form>
+					<label for="quantity">Quantity:</label>
+					<input type="text" id="quantity" name="quantity">
+				</form>
+				<button id="updateButton" type="button" class="action">Update</button>
+			</div>
+
+			<div>
+				<form>
+					<label for="totalPrice">Total Checkout Price:</label>
+					<input id="totalPrice" type="text" value="" class="update"/><br>
+					<label for="totalQuantity">Total Quantity:</label>
+					<input id="totalQuantity" type="text" value="" class="update"/>
+				</form>
+			</div>
+
+			<div class = "footer">
+				<button id="discardButton" type="button" class="action">Back</button>
+				<button id="finalizeButton" type="button" class="action">Finalize</button>
+			</div>
+
+
+		</div>
+    </body>
+
+</html>
