@@ -9,21 +9,17 @@ export const execute = async (transactionId?: string): Promise<CommandResponse<v
 	let deleteTransaction: Sequelize.Transaction;
 
 	return DatabaseConnection.createTransaction()
-		.then((createdTransaction: Sequelize.Transaction): Promise<TransactionEntryModel | null> => {
+		.then((createdTransaction: Sequelize.Transaction): Promise<TransactionEntryModel[] | null> => {
 			deleteTransaction = createdTransaction;
 
-			return TransactionEntryRepository.queryById(
+			return TransactionEntryRepository.queryByTransactionId(
 				<string>transactionId,
 				deleteTransaction);
-		}).then((queriedTransactionEntry: (TransactionEntryModel | null)): Promise<void> => {
-			if (queriedTransactionEntry == null) {
-				return Promise.resolve();
-			}
-
-			return queriedTransactionEntry.destroy(
+		}).then((queriedTransactionEntry: (TransactionEntryModel[] | null)): void => {
+			return queriedTransactionEntry!.forEach(entry => entry.destroy(
 				<Sequelize.DestroyOptions>{
 					transaction: deleteTransaction
-				});
+				}));
 		}).then((): CommandResponse<void> => {
 			deleteTransaction.commit();
 

@@ -37,6 +37,10 @@ export interface EmployeeSaveRequest {
 	classification: number;
 	isInitialEmployee?: boolean;
 }
+
+export interface DeleteTransactionRequest {
+	transactionId: string;
+}
 // End request object definitions
 
 // Response object definitions

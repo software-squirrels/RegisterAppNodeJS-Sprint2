@@ -32,11 +32,11 @@
 			<br />
 			<br />
 
-			<input type="hidden" name="transactionId" value="<%= locals.transactionId %>"/>
-			<input type="search" name="search" placeholder="Search"/>
+			<input type="hidden" name="transactionId" id="transactionId" value="<%= locals.transactionId %>"/>
+			<input type="search" id="search" name="search" placeholder="Search"/>
 
 			<% if (locals.products && (locals.products.length > 0)) { %>
-				<ul id="productsListing" class="products">
+				<ul id="transactionEntries" class="products">
 					<% locals.products.forEach((product) => { %>
 						<li>
 							<input type="hidden" name="productId" value="<%= product.id %>" />
@@ -57,7 +57,7 @@
 		<br />
 		<br />
 		<button id="completeCartAction" type="button" class="action">Complete</button>
-	
+
 		<div class="hidden">
 			<input type="checkbox" id="isRefreshed" class="hidden">
 			<script type="text/javascript">

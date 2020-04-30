@@ -82,9 +82,50 @@ document.addEventListener("DOMContentLoaded", () => {
 	}
 
 	document.getElementById("search").addEventListener("keypress", productSearch);
-
-	// TODO: Cancel and complete button clicks
+	document.getElementById("cancelCartAction").addEventListener("click", cancelCart);
+	document.getElementById("completeCartAction").addEventListener("click", completeCart);
 });
+
+function completeDeleteAction(callbackResponse) {
+	if (callbackResponse.data == null) {
+		return;
+	}
+
+	if ((callbackResponse.data.redirectUrl != null)
+		&& (callbackResponse.data.redirectUrl !== "")) {
+
+		window.location.replace(callbackResponse.data.redirectUrl);
+		return;
+	}
+}
+
+function cancelCart() {
+	const transactionIdValue = document.getElementById("transactionId").value;
+	const deleteActionUrl = "/transaction?transactionId=" + transactionIdValue;
+	ajaxDelete(deleteActionUrl, (callbackResponse) => {
+		if(isSuccessResponse(callbackResponse)) {
+			completeDeleteAction(callbackResponse);
+		}
+		else {
+			displayError(callbackResponse.errorMessage);
+		}
+	});
+}
+
+function completeCart() {
+	const transactionIdValue = document.getElementById("transactionId").value;
+	const completeActionUrl = "/checkout?transactionId=" + transactionIdValue;
+
+	ajaxGet(completeActionUrl, (callbackResponse) => {
+		if(isSuccessResponse(callbackResponse)) {
+			completeDeleteAction(callbackResponse);
+		}
+		else {
+			displayError(callbackResponse.errorMessage);
+		}
+	});
+return;
+}
 
 function findClickedListItemElement(clickedTarget) {
 	if (clickedTarget.tagName.toLowerCase() === "li") {
@@ -160,12 +201,6 @@ function addToCart(event) {
 	quantityElement.value = "1";
 	quantityElement.classList.add("quantityUpdate");
     listItemElement.appendChild(quantityElement);
-}
-
-function productAdd(event) {
-	let listItem = findClickedListItemElement(event.target);
-	// Ajax post/patch
-	let productId = listItem.querySelector("input[name='productId'][type='hidden']").value;
 }
 
 function productSearch(event) {
