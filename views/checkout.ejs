@@ -66,8 +66,8 @@
 					<% var totalPrice = 0%>
 					<% var totalQuantity = 0%>
 					<% locals.transactionEntries.forEach((product) => { %>
-						<% totalPrice += product.price%>
-						<% totalQuantity += product.quantity%>
+						<% totalPrice += Number(product.price)%>
+						<% totalQuantity += Number(product.quantity)%>
 					<% }); %>
 					<br />
 					<br />
