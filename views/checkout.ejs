@@ -1,78 +1,103 @@
 <html>
-    <head>
-	
-        <title>Checkout</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1"> 
-        <link rel="stylesheet" type="text/css" href="/styles/master.css">
 
-        <script type="text/javascript" src="/scripts/master.js" defer></script>4
-    </head>
-    <body>
-        <div class = "header">
-            <h1 class = "primary-message">Checkout</h1>
-        </div>
+<head>
+	<title>Register - Checkout</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-		<div id="main" class="main">
-			<div id="error" <% if (!locals.errorMessage || (locals.errorMessage === "")) { %> class="hidden" <% } %>>
-				<h4 id="errorMessage" class="error-message">
-					<% if (locals.errorMessage && (locals.errorMessage !== "")) { %>
-						<%= locals.errorMessage %>
-					<% } %>
-				</h4>
-			</div>
+	<link rel="stylesheet" type="text/css" href="/styles/master.css">
+	<!--<link rel="stylesheet" type="text/css" href="/styles/transaction.css">-->
 
-			<div class = "inputContent">
-				<table id="transactionDetails">
-					<tbody>
-						<tr>
-							<td class="label">Transaction ID:</td>
-							<td>
-								<input id="transactionID" type="text" value="" class="update"/>
-							</td>
-						</tr>
-						<tr>
-							<td class="label">Count:</td>
-							<td>
-								<input id="transactionCount" type="text" value="" class="update"/>
-							</td>
-						</tr>
-						<tr>
-							<td class="label">Price:</td>
-							<td>
-								<input id="transactionPrice" type="text" value="" class="update"/>
-							</td>
-						</tr>
-						<tr>
-							<td class="label">Transaction Date:</td>
-							<td>
-								<input id="transactionDate" type="text" value="" class="update"/>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-				<form>
-					<label for="quantity">Quantity:</label>
-					<input type="text" id="quantity" name="quantity">
-				</form>
-				<button id="updateButton" type="button" class="action">Update</button>
-			</div>
-			
-			<div>
-				<form>
-					<label for="totalPrice">Total Checkout Price:</label>
-					<input id="totalPrice" type="text" value="" class="update"/><br>
-					<label for="totalQuantity">Total Quantity:</label>
-					<input id="totalQuantity" type="text" value="" class="update"/>
-				</form>
-			</div>
-			
-			<div class = "footer">
-				<button id="discardButton" type="button" class="action">Back</button>
-				<button id="finalizeButton" type="button" class="action">Finalize</button>
-			</div>
-			
-			
+	<script type="text/javascript" src="/scripts/master.js" defer></script>
+	<script type="text/javascript" src="/scripts/checkout.js" defer></script>
+</head>
+
+<body>
+	<div class="header">
+		<h1 class="primary-message">Checkout</h1>
+	</div>
+
+	<div id="main" class="main">
+		<div id="error" <% if (!locals.errorMessage || (locals.errorMessage === "")) { %> class="hidden" <% } %>>
+			<h4 id="errorMessage" class="error-message">
+				<% if (locals.errorMessage && (locals.errorMessage !== "")) { %>
+					<%= locals.errorMessage %>
+				<% } %>
+			</h4>
 		</div>
-    </body>
+
+		<div class="checkoutWrapper">
+			<!--<div <% if (!locals.isElevatedUser) { %>class="hidden"<% } %>>
+				<a href="/productDetail/" class="button">Create New</a>
+			</div>-->
+			<br />
+			<br />
+			
+			<input type="search" name="search" id="search" placeholder="Search"/>
+			
+			<!--
+			I'll leave in the search functionality for checkout
+			-->
+
+			<% if (locals.transactionEntries && (locals.transactionEntries.length > 0)) { %>
+				<ul id="TransactionListing" class="products">
+					<% locals.transactionEntries.forEach((product) => { %>
+						<li>
+							<input type="hidden" name="productId" value="<%= product.productId %>" />
+							<span name="productLookupCode"><%= product.lookupCode %></span>
+							<br />&nbsp;&nbsp;<span name="price">Price: $<%= product.price %></span>
+							<br />&nbsp;&nbsp;<label for="quantity">Quantity: </label>
+  							<input type="number" placeholder="<%= product.quantity %>" min="0" max="999" name="quantity">
+							<!--<span class="add">Add</span>-->
+							<span class="update" style="float: right;">Update</span>
+						</li>
+					<% }); %>
+				</ul>
+			<% } %>
+			
+			<br />
+			<br />
+			<button id="updateButton" type="button" class="action">Update</button>
+		</div>
+		
+		
+		<div>
+				<form>
+					<!--<label for="totalPrice">Total Checkout Price:</label>-->
+					<% var totalPrice = 0%>
+					<% var totalQuantity = 0%>
+					<% locals.transactionEntries.forEach((product) => { %>
+						<% totalPrice += product.price%>
+						<% totalQuantity += product.quantity%>
+					<% }); %>
+					<span name="Total Checkout Price:">Total Checkout Price: <%= totalPrice %></span>
+					<span name="Total Checkout Price:">Total Quantity: <%= totalQuantity %></span>
+					<!--<label for="totalQuantity">Total Quantity:</label>
+					<input id="totalQuantity" type="text" value="" class="update"/>-->
+				</form>
+			</div>
 	
+		<div class="hidden">
+			<input type="checkbox" id="isRefreshed" class="hidden">
+			<script type="text/javascript">
+				window.onunload = function() {
+					const isRefreshedElement = document.getElementById("isRefreshed");
+					if(!isRefreshedElement.checked) {
+						isRefreshedElement.checked = true;
+					} else {
+						isRefreshedElement.checked = false;
+						location.reload();
+					}
+				}
+			</script>
+		</div>
+	</div>
+
+	<div class="footer">
+		<img id="signOutImage" src="/images/Sign-Out.png" alt="Sign Out" class="footer" />
+		<button id="discardButton" type="button" class="action">Back</button>
+		<button id="finalizeButton" type="button" class="action">Finalize</button>
+	</div>
+
+</body>
+
 </html>
