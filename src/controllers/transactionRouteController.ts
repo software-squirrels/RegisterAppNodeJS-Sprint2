@@ -4,8 +4,9 @@ import { TransactionPageResponse, TransactionEntry, CommandResponse, ActiveUser,
 import * as ProductsQuery from "./commands/products/productsQuery";
 import * as Helper from "./helpers/routeControllerHelper";
 import * as TransactionEntriesQuery from "./commands/transactionEntries/transactionEntriesQuery";
+import * as TransactionEntryDeleteCommand from "./commands/transactionEntries/transactionEntryDeleteCommand";
 import * as ValidateActiveUser from "./commands/activeUsers/validateActiveUserCommand";
-import { ViewNameLookup } from "./lookups/routingLookup";
+import { ViewNameLookup, RouteLookup, QueryParameterLookup } from "./lookups/routingLookup";
 import * as TransactionEntryCreateCommand from "./commands/transactionEntries/transactionEntryCreateCommand";
 import * as TransactionEntryUpdateCommand from "./commands/transactionEntries/transactionEntryUpdateCommand";
 import * as TransactionEntryQuery from "./commands/transactionEntries/transactionEntryQuery";
@@ -74,6 +75,25 @@ export const createTransactionEntry = async (req: Request, res: Response): Promi
 			<Helper.ApiErrorHints>{
 				defaultErrorMessage: Resources.getString(
 					ResourceKey.TRANSACTION_UNABLE_TO_SAVE)
+			});
+	});
+};
+
+export const deleteTransaction = async (req: Request, res: Response): Promise<void> => {
+	return TransactionEntryDeleteCommand.execute(req.query[QueryParameterLookup.TransactionId])
+	.then((deleteTransactionCommandResponse: CommandResponse<void>): void => {
+		res.send({
+				status: deleteTransactionCommandResponse.status,
+				redirectUrl: RouteLookup.MainMenu
+			});
+	}).catch((error: any): void => {
+		return Helper.processApiError(
+			error,
+			res,
+			<Helper.ApiErrorHints>{
+				redirectBaseLocation: RouteLookup.Transaction,
+				defaultErrorMessage: Resources.getString(
+					ResourceKey.TRANSACTION_UNABLE_TO_DELETE)
 			});
 	});
 };

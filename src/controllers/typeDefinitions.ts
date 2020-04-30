@@ -141,6 +141,10 @@ export interface ProductSaveResponse extends ApiResponse {
 	product: Product;
 }
 
+export interface DeleteTransactionRequest {
+	transactionId: string;
+}
+
 export interface TransactionSaveResponse extends ApiResponse {
 	transaction: Transaction;
 }

@@ -9,17 +9,62 @@ document.addEventListener("DOMContentLoaded", () => {
 	}
 
 	document.getElementById("search").addEventListener("keypress", productSearch);
+	document.getElementById("cancelCartAction").addEventListener("click", cancelCart);
+	document.getElementById("completeCartAction").addEventListener("click", completeCart);
 
 	// TODO: Cancel and complete button clicks
 	getCancelCartActionElement().addEventListener(
 		"click",
-		() => { window.location.assign("/mainmenu"); });
+		() => {
+			window.location.assign("/mainmenu");
+		});
 
 	getCompleteCartActionElement().addEventListener(
 		"click",
-		() => { window.location.assign("/checkout"); });
+		() => {
+			window.location.assign("/checkout");
+		});
 
 });
+
+function completeDeleteAction(callbackResponse) {
+	if (callbackResponse.data == null) {
+		return;
+	}
+
+	if (callbackResponse.data.redirectUrl != null
+		&& callbackResponse.data.redirectUrl !== "") {
+
+		window.location.replace(callbackResponse.data.redirectUrl);
+		return;
+	}
+}
+
+function cancelCart() {
+	const transactionIdValue = document.getElementById("transactionId").value;
+	const deleteActionUrl = "/transaction?transactionId=" + transactionIdValue;
+	ajaxDelete(deleteActionUrl, (callbackResponse) => {
+		if(isSuccessResponse(callbackResponse)) {
+			completeDeleteAction(callbackResponse);
+		} else {
+			displayError(callbackResponse.errorMessage);
+		}
+	});
+}
+
+function completeCart() {
+	const transactionIdValue = document.getElementById("transactionId").value;
+	const completeActionUrl = "/checkout?transactionId=" + transactionIdValue;
+
+	ajaxGet(completeActionUrl, (callbackResponse) => {
+		if(isSuccessResponse(callbackResponse)) {
+			completeDeleteAction(callbackResponse);
+		} else {
+			displayError(callbackResponse.errorMessage);
+		}
+	});
+	return;
+}
 
 async function addToCart(event) {
 	const listItem = event.target.parentElement;
