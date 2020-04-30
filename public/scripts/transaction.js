@@ -1,3 +1,5 @@
+let hideProductAddedAlertTimer = undefined;
+
 document.addEventListener("DOMContentLoaded", () => {
 	const productListingElement = document.getElementById("productsListing");
 	if (productListingElement != null) {
@@ -85,8 +87,39 @@ async function addToCart(event) {
 			"Content-type": "application/json; charset=UTF-8"
 		}
 	}));
+	displayProductAddedAlertModal();
 	return;
 }
+
+
+//Start ProductSavedModal
+function displayProductAddedAlertModal() {
+	if (hideProductAddedAlertTimer)
+		clearTimeout(hideProductAddedAlertTimer);
+
+	const productAddedAlertModalElement = getProductAddedAlertModalElement();
+	// productAddedAlertModalElement.style.display = 'none';
+	productAddedAlertModalElement.style.display = 'block';
+
+	hideProductAddedAlertTimer = setTimeout(hideProductAddedAlertModal, 1200);
+}
+
+function hideProductAddedAlertModal() {
+	if (hideProductAddedAlertTimer)
+		clearTimeout(hideProductAddedAlertTimer);
+
+	getProductAddedAlertModalElement().style.display = 'none';
+}
+
+function hideProductSavedAlertModal() {
+	if (hideProductSavedAlertTimer) {
+		clearTimeout(hideProductSavedAlertTimer);
+	}
+
+	getSavedAlertModalElement().style.display = "none";
+}
+
+//End ProductSavedModal
 
 function productSearch(event) {
 	const productListingElement = document.getElementById("productsListing");
@@ -115,4 +148,8 @@ function getCancelCartActionElement() {
 
 function getCompleteCartActionElement() {
 	return document.getElementById("completeCartAction");
+}
+
+function getProductAddedAlertModalElement() {
+	return document.getElementById('productAddedAlertModal');
 }

@@ -4,6 +4,15 @@ document.addEventListener("DOMContentLoaded", () => {
 	
 	//document.getElementById("search").addEventListener("keypress", productSearch);
 	
+	const deleteButtonElement = document.getElementById("deletebutton");
+	if (deleteButtonElement != null) {
+		const deleteButtonElements = deleteButtonElement.children;
+
+		for (let i = 0; i < deleteButtonElements.length; i++) {
+			deleteButtonElements[i].addEventListener("click", deleteFromCart);
+		}
+	}
+	
 	// TODO: Back and Finalize button clicks
 	getBackActionElement().addEventListener(
 		"click",
