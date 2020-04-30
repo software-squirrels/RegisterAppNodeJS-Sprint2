@@ -46,10 +46,9 @@ li.hidden {
 input.quantityUpdate {
 	width: 40px;
 }
-
-button.footer {
+div.total{
 	left: 0;
 	right: 0;
-	bottom: 0;
+	bottom: 10%;
 	position: absolute;
 }

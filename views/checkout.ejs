@@ -5,7 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<link rel="stylesheet" type="text/css" href="/styles/master.css">
-	<!--<link rel="stylesheet" type="text/css" href="/styles/transaction.css">-->
+	<link rel="stylesheet" type="text/css" href="/styles/checkout.css">
 
 	<script type="text/javascript" src="/scripts/master.js" defer></script>
 	<script type="text/javascript" src="/scripts/checkout.js" defer></script>
@@ -48,7 +48,7 @@
 							<br />&nbsp;&nbsp;<label for="quantity">Quantity: </label>
   							<input type="number" placeholder="<%= product.quantity %>" min="0" max="999" name="quantity">
 							<!--<span class="add">Add</span>-->
-							<span class="update" style="float: right;">Update</span>
+							<!--<span class="update" style="float: right;">Update</span>-->
 						</li>
 					<% }); %>
 				</ul>
@@ -57,10 +57,10 @@
 			<br />
 			<br />
 			<button id="updateButton" type="button" class="action">Update</button>
-		</div>
 		
 		
-		<div>
+		
+		<div class="total">
 				<form>
 					<!--<label for="totalPrice">Total Checkout Price:</label>-->
 					<% var totalPrice = 0%>
@@ -101,7 +101,7 @@
 		<button id="discardButton" type="button" class="action">Back</button>
 		<button id="finalizeButton" type="button" class="action">Finalize</button>
 	</div>
-
+	</div>
 </body>
 
 </html>
