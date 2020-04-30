@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 	}
 
-	document.getElementById("search").addEventListener("keypress", productSearch);
+	document.getElementById("search").addEventListener("keyup", productSearch);
 	document.getElementById("cancelCartAction").addEventListener("click", cancelCart);
 	document.getElementById("completeCartAction").addEventListener("click", completeCart);
 
