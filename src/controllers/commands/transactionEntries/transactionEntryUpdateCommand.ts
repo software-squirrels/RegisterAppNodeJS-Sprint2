@@ -1,104 +1,47 @@
-import Sequelize from "sequelize";
-import * as Helper from "../helpers/helper";
-import { TransactionEntryModel } from "../models/transactionEntryModel";
-import * as TransactionEntryHelper from "./helpers/transactionEntryHelper";
-import * as TransactionEntryRepository from "../models/transactionEntryModel";
-import { Resources, ResourceKey } from "../../../resourceLookup";
-import * as DatabaseConnection from "../models/databaseConnection";
+
+import { ResourceKey } from "../../../resourceLookup";
 import { CommandResponse, TransactionEntry, TransactionEntrySaveRequest } from "../../typeDefinitions";
-
-const buildUpdateObject = (transactionEntrySaveRequest: TransactionEntrySaveRequest): Object => {
-	const updateObject: any = {};
-
-	if (transactionEntrySaveRequest.price != null) {
-		updateObject.price = transactionEntrySaveRequest.price;
-	}
-	if (transactionEntrySaveRequest.quantity != null) {
-		updateObject.quantity = transactionEntrySaveRequest.quantity;
-	}
-	if (transactionEntrySaveRequest.productId != null) {
-		updateObject.productId = transactionEntrySaveRequest.productId;
-	}
-	if (transactionEntrySaveRequest.transactionId != null) {
-		updateObject.transactionId = transactionEntrySaveRequest.transactionId;
-	}
-
-	return updateObject;
-};
-
-const validateSaveRequest = (transactionEntrySaveRequest: TransactionEntrySaveRequest): CommandResponse<TransactionEntry> => {
-	let errorMessage: string = "";
-
-	if ((transactionEntrySaveRequest.price != null)
-		&& isNaN(transactionEntrySaveRequest.price)) {
-
-		errorMessage = Resources.getString(ResourceKey.TRANSACTION_TOTAL_INVALID);
-	} else if ((transactionEntrySaveRequest.quantity != null)
-		&& isNaN(transactionEntrySaveRequest.quantity)) {
-
-		errorMessage = Resources.getString(ResourceKey.TRANSACTION_TOTAL_INVALID);
-	} else if ((transactionEntrySaveRequest.productId != null)
-		&& (transactionEntrySaveRequest.productId.trim() === "")) {
-
-		errorMessage = Resources.getString(ResourceKey.TRANSACTION_REFERENCE_ID_INVALID);
-	}
-
-	return ((errorMessage === "")
-		? <CommandResponse<TransactionEntry>>{ status: 200 }
-		: <CommandResponse<TransactionEntry>>{
-			status: 422,
-			message: errorMessage
-		});
-};
+const PG = require('pg');
 
 export const execute = async (
 	transactionEntrySaveRequest: TransactionEntrySaveRequest
 ): Promise<CommandResponse<TransactionEntry>> => {
+	const pg = new PG.Client({connectionString: process.env.DATABASE_URL, ssl: "verify-full"});
+	await pg.connect();
 
-	const validationResponse: CommandResponse<TransactionEntry> =
-		validateSaveRequest(transactionEntrySaveRequest);
-	if (validationResponse.status !== 200) {
-		return Promise.reject(validationResponse);
+	const productQuery = await pg.query('select * from product where id = $1;', [transactionEntrySaveRequest.productId]);
+	if (productQuery.rowCount === 0) {
+		return Promise.reject(ResourceKey.PRODUCT_LOOKUP_CODE_INVALID);
 	}
+	const product = productQuery.rows[0];
 
-	let updateTransaction: Sequelize.Transaction;
-
-	return DatabaseConnection.createTransaction()
-		.then((createdTransaction: Sequelize.Transaction): Promise<TransactionEntryModel | null> => {
-			updateTransaction = createdTransaction;
-
-			return TransactionEntryRepository.queryById(
-				<string>transactionEntrySaveRequest.transactionId,
-				updateTransaction);
-		}).then((queriedTransactionEntry: (TransactionEntryModel | null)): Promise<TransactionEntryModel> => {
-			if (queriedTransactionEntry == null) {
-				return Promise.reject(<CommandResponse<TransactionEntry>>{
-					status: 404,
-					message: Resources.getString(ResourceKey.TRANSACTION_NOT_FOUND)
-				});
-			}
-
-			return queriedTransactionEntry.update(
-				buildUpdateObject(transactionEntrySaveRequest),
-				<Sequelize.InstanceUpdateOptions>{
-					transaction: updateTransaction
-				});
-		}).then((updatedTransactionEntry: TransactionEntryModel): CommandResponse<TransactionEntry> => {
-			updateTransaction.commit();
-
-			return <CommandResponse<TransactionEntry>>{
-				status: 200,
-				data: TransactionEntryHelper.mapTransactionEntryData(updatedTransactionEntry)
-			};
-		}).catch((error: any): Promise<CommandResponse<TransactionEntry>> => {
-			if (updateTransaction != null) {
-				updateTransaction.rollback();
-			}
-
-			return Promise.reject(<CommandResponse<TransactionEntry>>{
-				status: (error.status || 500),
-				message: (error.messsage
-					|| Resources.getString(ResourceKey.TRANSACTION_UNABLE_TO_SAVE))
-			});
-		});
+	const transactionEntryQuery = await pg.query(
+		'select * from transactionentry where transactionid = $1 and productid = $2;', 
+		[transactionEntrySaveRequest.transactionId, product.id]
+	);
+	if (transactionEntryQuery.rowCount === 0) {
+		//Create database entry
+		await pg.query('insert into transactionentry(transactionid, productid, quantity, price) values($1, $2, $3, $4);',
+			[
+				transactionEntrySaveRequest.transactionId, 
+				product.id, 
+				transactionEntrySaveRequest.quantity, 
+				transactionEntrySaveRequest.quantity * product.price
+			]
+		);
+	} else {
+		//Update existing entry
+		const oldEntry = transactionEntryQuery.rows[0];
+		oldEntry.quantity += transactionEntrySaveRequest.quantity;
+		oldEntry.price = oldEntry.quantity * product.price;
+		await pg.query('UPDATE transactionentry SET quantity = quantity+$1, price = price+$2 WHERE transactionid = $3;',
+			[
+				transactionEntrySaveRequest.quantity,
+				transactionEntrySaveRequest.quantity * product.price,
+				transactionEntrySaveRequest.transactionId
+			]
+		);
+	}
+	await pg.end();
+	return <CommandResponse<TransactionEntry>>{ status: 200 };
 };

@@ -79,18 +79,12 @@ export const createTransactionEntry = async (req: Request, res: Response): Promi
 };
 
 export const updateTransactionEntry = async (req: Request, res: Response): Promise<void> => {
-	return TransactionEntryUpdateCommand.execute(req.body)
-	.then((saveTransactionEntryCommandResponse: CommandResponse<TransactionEntry>): void => {
-		res.status(saveTransactionEntryCommandResponse.status);
-	}).catch((error: any): void => {
-		return Helper.processApiError(
-			error,
-			res,
-			<Helper.ApiErrorHints>{
-				defaultErrorMessage: Resources.getString(
-					ResourceKey.TRANSACTION_UNABLE_TO_SAVE)
-			});
+	const status = await TransactionEntryUpdateCommand.execute(req.body).catch((error: any): CommandResponse<TransactionEntry> => {
+		console.log(error);
+		return { status: 500 };
 	});
+	res.status(status.status);
+	res.end("Yey");
 };
 
 // export const updateTransactionEntry = async (req: Request, res: Response): Promise<void> => {

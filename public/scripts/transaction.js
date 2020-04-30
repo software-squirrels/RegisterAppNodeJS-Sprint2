@@ -13,76 +13,27 @@ document.addEventListener("DOMContentLoaded", () => {
 	// TODO: Cancel and complete button clicks
 });
 
-function findClickedListItemElement(clickedTarget) {
-	if (clickedTarget.tagName.toLowerCase() === "li") {
-		return clickedTarget;
-	} else {
-		let ancestorIsListItem = false;
-		let ancestorElement = clickedTarget.parentElement;
-
-		while (!ancestorIsListItem && (ancestorElement != null)) {
-			ancestorIsListItem = (ancestorElement.tagName.toLowerCase() === "li");
-
-			if (!ancestorIsListItem) {
-				ancestorElement = ancestorElement.parentElement;
-			}
-		}
-
-		return (ancestorIsListItem ? ancestorElement : null);
-	}
-}
-
-function onCartItemClicked(event) {
-	if ((event.target.tagName.toLowerCase() === "input")
-		&& (event.target.name === "productQuantity")) {
-
-		return;
-	}
-	const listItem = findClickedListItemElement(event.target);
-
-	listItem.parentElement.removeChild(listItem);
-}
-
-function addToCart(event) {
+async function addToCart(event) {
 	const listItem = event.target.parentElement;
 	const clickedProductId = listItem.querySelector("input[name='productId']").value;
 	const clickedProductAmount = listItem.querySelector("input[name='quantity']");
 	const clickedProductLookupCode = listItem.querySelector('span[name="productLookupCode"]').innerHTML;
 	const amount = clickedProductAmount.value;
+	const transactionId = document.querySelector("input[name='transactionId']").value;
 	clickedProductAmount.value = "";
 	console.log(clickedProductId, amount, clickedProductLookupCode);
+	console.log(await fetch('/transaction', {
+		method: 'PATCH',
+		body: JSON.stringify({
+			quantity: amount,
+			productId: clickedProductId,
+			transactionId: transactionId
+		}),
+		headers: {
+			"Content-type": "application/json; charset=UTF-8"
+		}
+	}));
 	return;
-
-	const listItemElement = document.createElement("li");
-	listItemElement.addEventListener("click", onCartItemClicked);
-	transactionEntryListElement.appendChild(listItemElement);
-
-	const productIdElement = document.createElement("input");
-	productIdElement.type = "hidden";
-	productIdElement.name = "productId";
-	productIdElement.value = listItem.querySelector("input[name='productId']").value;
-	listItemElement.appendChild(productIdElement);
-
-	const productLookupcodeElement = document.createElement("span");
-	productLookupcodeElement.classList.add("productLookupCodeDisplay");
-	productLookupcodeElement.innerHTML = listItem.querySelector("span.productLookupCodeDisplay").innerHTML;
-	listItemElement.appendChild(productLookupcodeElement);
-
-	listItemElement.appendChild(document.createElement("br"));
-	listItemElement.appendChild(document.createTextNode("\u00A0\u00A0"));
-
-	const quantityElement = document.createElement("input");
-	quantityElement.type = "number";
-	quantityElement.name = "productQuantity";
-	quantityElement.value = "1";
-	quantityElement.classList.add("quantityUpdate");
-    listItemElement.appendChild(quantityElement);
-}
-
-function productAdd(event) {
-	let listItem = findClickedListItemElement(event.target);
-	// Ajax post/patch
-	let productId = listItem.querySelector("input[name='productId'][type='hidden']").value;
 }
 
 function productSearch(event) {
