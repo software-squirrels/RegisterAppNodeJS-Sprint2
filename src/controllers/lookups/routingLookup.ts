@@ -5,7 +5,8 @@ export enum ParameterLookup {
 
 export enum QueryParameterLookup {
 	ErrorCode = "errorCode",
-	EmployeeId = "employeeId"
+	EmployeeId = "employeeId",
+	TransactionId = "transactionId"
 }
 
 export enum ViewNameLookup {
@@ -14,7 +15,8 @@ export enum ViewNameLookup {
 	ProductDetail = "productDetail",
 	EmployeeDetail = "employeeDetail",
 	ProductListing = "productListing",
-	Transaction = "transaction"
+	Transaction = "transaction",
+	Checkout = "checkout"
 }
 
 export enum RouteLookup {
@@ -26,6 +28,7 @@ export enum RouteLookup {
 	EmployeeDetail = "/employeeDetail",
 	ProductListing = "/productListing",
 	Transaction = "/transaction",
+	Checkout = "/checkout",
 
 	// Page routing - parameters
 	ProductIdParameter = "/:productId",

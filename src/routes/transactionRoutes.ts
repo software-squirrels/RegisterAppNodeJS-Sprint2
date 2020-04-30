@@ -4,6 +4,7 @@ import * as TransactionRouteController from "../controllers/transactionRouteCont
 
 function transactionRoutes(server: express.Express) {
 	server.get(RouteLookup.Transaction, TransactionRouteController.start);
+	server.patch(RouteLookup.Transaction, TransactionRouteController.updateTransactionEntry);
 }
 
 module.exports.routes = transactionRoutes;

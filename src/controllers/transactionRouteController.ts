@@ -1,10 +1,15 @@
 import { Request, Response } from "express";
 import { Resources, ResourceKey } from "../resourceLookup";
-import { TransactionPageResponse, TransactionListing, CommandResponse, ActiveUser, Product, ProductListingPageResponse } from "./typeDefinitions";
-import * as Helper from "./helpers/routeControllerHelper";
+import { TransactionPageResponse, TransactionEntry, CommandResponse, ActiveUser, Product, ProductListingPageResponse } from "./typeDefinitions";
 import * as ProductsQuery from "./commands/products/productsQuery";
+import * as Helper from "./helpers/routeControllerHelper";
+import * as TransactionEntriesQuery from "./commands/transactionEntries/transactionEntriesQuery";
 import * as ValidateActiveUser from "./commands/activeUsers/validateActiveUserCommand";
 import { ViewNameLookup } from "./lookups/routingLookup";
+import * as TransactionEntryCreateCommand from "./commands/transactionEntries/transactionEntryCreateCommand";
+import * as TransactionEntryUpdateCommand from "./commands/transactionEntries/transactionEntryUpdateCommand";
+import * as TransactionEntryQuery from "./commands/transactionEntries/transactionEntryQuery";
+import { v1 as uuidv1 } from "uuid";
 
 const processStartTransactionError = (error: any, res: Response): void => {
 	if (Helper.processStartError(error, res)) {
@@ -17,10 +22,10 @@ const processStartTransactionError = (error: any, res: Response): void => {
 
 	return res.status((error.status || 500))
 		.render(
-			ViewNameLookup.ProductListing,
-			<ProductListingPageResponse>{
+			ViewNameLookup.Transaction,
+			<TransactionPageResponse>{
 				products: [],
-				isElevatedUser: false,
+				transactionId: uuidv1(),
 				errorMessage: (error.message
 					|| Resources.getString(ResourceKey.PRODUCTS_UNABLE_TO_QUERY))
 			});
@@ -40,6 +45,7 @@ export const start = async (req: Request, res: Response): Promise<void> => {
 		return res.render(ViewNameLookup.Transaction,
 		<TransactionPageResponse>{
 			products: productsCommandResponse.data,
+			transactionId: uuidv1(),
 			employeeId: activeUserResponse.data!.id
 		});
 	}).catch((error: any): void => {
@@ -48,7 +54,8 @@ export const start = async (req: Request, res: Response): Promise<void> => {
 };
 
 export const checkTransactionEntry = async (req: Request, res: Response): Promise<void> => {
-	return QueryTransactionEntry.execute((<Express.Session>req.session).id)
+	return TransactionEntryQuery.queryById(req.body.referenceId)
+	//return QueryTransactionEntry.execute((<Express.Session>req.session).id)
 	.then((): void => {
 		res.sendStatus(200);
 	}).catch((): void => {
@@ -57,9 +64,29 @@ export const checkTransactionEntry = async (req: Request, res: Response): Promis
 };
 
 export const createTransactionEntry = async (req: Request, res: Response): Promise<void> => {
-	return CreateTransactionEntry.execute(req.body)
-}
+	return TransactionEntryCreateCommand.execute(req.body)
+	.then((saveTransactionEntryCommandResponse: CommandResponse<TransactionEntry>): void => {
+		res.status(saveTransactionEntryCommandResponse.status);
+	}).catch((error: any): void => {
+		return Helper.processApiError(
+			error,
+			res,
+			<Helper.ApiErrorHints>{
+				defaultErrorMessage: Resources.getString(
+					ResourceKey.TRANSACTION_UNABLE_TO_SAVE)
+			});
+	});
+};
 
 export const updateTransactionEntry = async (req: Request, res: Response): Promise<void> => {
-	return saveTransactionEntry(req, res, TransactionEntryUpdateCommand.execute);
-}
+	const status = await TransactionEntryUpdateCommand.execute(req.body).catch((error: any): CommandResponse<TransactionEntry> => {
+		console.log(error);
+		return { status: 500 };
+	});
+	res.status(status.status);
+	res.end("Yey");
+};
+
+// export const updateTransactionEntry = async (req: Request, res: Response): Promise<void> => {
+// 	return saveTransactionEntry(req, res, TransactionEntryUpdateCommand.execute);
+// }
