@@ -1,7 +1,43 @@
 document.addEventListener("DOMContentLoaded", () => {
-	document.getElementById("updateQuantityButton")
+	document.getElementById("updateButton")
         .addEventListener("click", updateTotalCost);
+	
+	//document.getElementById("search").addEventListener("keypress", productSearch);
+	
+	// TODO: Back and Finalize button clicks
+	getBackActionElement().addEventListener(
+		"click",
+		() => { window.location.assign("/transaction"); });
+
+	getFinalizeActionElement().addEventListener(
+		"click",
+		() => { window.location.assign("/mainmenu"); });
+
 });
+
+function productSearch(event) {
+	if (event.which !== 13) { // ENTER/RETURN key
+		return;
+	}
+
+	const productListingElement = document.getElementById("TransactionListing");
+	if (productListingElement == null) {
+		return;
+	}
+
+	const productListElements = productListingElement.children;
+
+	for (let i = 0; i < productListElements.length; i++) {
+		const lookupCode = productListElements[i].querySelector('span[name="productLookupCode"]').innerHTML;
+		if (event.target.value === "") {
+			productListElements[i].style.display = "block";
+		} else if (!lookupCode.toLowerCase().includes(event.target.value.toLowerCase())) {
+			productListElements[i].style.display = "none";
+		} else {
+			productListElements[i].style.display = "block";
+		}
+	}
+}
 
 function updateTotalCost(event) {
 	const transactionIdIsDefined = transactionId != null && transactionId.trim() !== '';
@@ -74,4 +110,11 @@ function getTransactionID() {
 	return getTransactionIDElement().value;
 }
 
+//Getters and Setters Buttons
+function getBackActionElement() {
+	return document.getElementById("discardButton");
+}
 
+function getFinalizeActionElement() {
+	return document.getElementById("finalizeButton");
+}

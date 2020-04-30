@@ -1,4 +1,4 @@
-.transactionWrapper {
+.checkoutWrapper {
 	display: inline-block;
 }
 
@@ -45,4 +45,11 @@ li.hidden {
 
 input.quantityUpdate {
 	width: 40px;
+}
+
+button.footer {
+	left: 0;
+	right: 0;
+	bottom: 0;
+	position: absolute;
 }
