@@ -2,13 +2,16 @@ import { Request, Response } from "express";
 import { Resources, ResourceKey } from "../resourceLookup";
 import { CheckoutPageResponse, CommandResponse, ActiveUser, Transaction, TransactionEntry, TransactionSaveRequest, TransactionSaveResponse } from "./typeDefinitions";
 import * as Helper from "./helpers/routeControllerHelper";
-import * as TransactionEntriesQuery from "./commands/transactionEntries/transactionEntriesQuery";
 import * as ValidateActiveUser from "./commands/activeUsers/validateActiveUserCommand";
 import { ViewNameLookup, RouteLookup, QueryParameterLookup, ParameterLookup } from "./lookups/routingLookup";
 import * as TransactionUpdateCommand from "./commands/transactions/transactionUpdateCommand";
+import * as TransactionEntriesQuery from "./commands/transactionEntries/transactionEntriesQuery";
+import * as TransactionEntryDeleteCommand from "./commands/transactionEntries/transactionEntryDeleteCommand";
+import * as TransactionEntryUpdateCommand from "./commands/transactionEntries/transactionEntryUpdateCommand";
 import * as EmployeeSignIn from "./commands/employees/employeeSignInCommand";
 import * as EmployeeHelper from "./commands/employees/helpers/employeeHelper";
 import * as ProductsQuery from "./commands/products/productsQuery";
+import { v1 as uuidv1 } from "uuid";
 
 const processStartTransactionError = (error: any, res: Response): void => {
 	if (Helper.processStartError(error, res)) {
@@ -26,6 +29,7 @@ const processStartTransactionError = (error: any, res: Response): void => {
 			ViewNameLookup.Checkout,
 			<CheckoutPageResponse>{
 				transactionEntries: [],
+				transactionId: uuidv1(),
 				products: [],
 				errorMessage: (error.message
 					|| Resources.getString(ResourceKey.TRANSACTION_UNABLE_TO_QUERY))
@@ -49,6 +53,7 @@ export const start = async (req: Request, res: Response): Promise<void> => {
 	console.log(items);
 	res.render(ViewNameLookup.Checkout, <CheckoutPageResponse>{
 		transactionEntries: items,
+		transactionId: uuidv1(),
 		products: products
 	});
 };
@@ -106,7 +111,30 @@ const saveTransaction = async (
 		});
 };
 
+export const deleteTransaction = async (req: Request, res: Response): Promise<void> => {
+	return TransactionEntryDeleteCommand.execute(req.query[QueryParameterLookup.TransactionId])
+	.then((deleteTransactionCommandResponse: CommandResponse<void>): void => {
+		res.send({
+				status: deleteTransactionCommandResponse.status
+			});
+	}).catch((error: any): void => {
+		return Helper.processApiError(
+			error,
+			res,
+			<Helper.ApiErrorHints>{
+				redirectBaseLocation: RouteLookup.Transaction,
+				defaultErrorMessage: Resources.getString(
+					ResourceKey.TRANSACTION_UNABLE_TO_DELETE)
+			});
+	});
+};
+
+
 export const update = async (req: Request, res: Response): Promise<void> => {
-	// Update Function
-	return saveTransaction(req, res, TransactionUpdateCommand.execute);
+	const status = await TransactionEntryUpdateCommand.execute(req.body).catch((error: any): CommandResponse<TransactionEntry> => {
+		console.log(error);
+		return { status: 500 };
+	});
+	res.status(status.status);
+	res.end("Yey");
 };

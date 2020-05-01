@@ -9,7 +9,8 @@ document.addEventListener("DOMContentLoaded", () => {
 		const deleteButtonElements = deleteButtonElement.children;
 
 		for (let i = 0; i < deleteButtonElements.length; i++) {
-			deleteButtonElements[i].addEventListener("click", deleteFromCart);
+			console.log("111111");
+			deleteButtonElements[i].addEventListener("click", deleteActionClick);
 		}
 	}
 	
@@ -64,15 +65,29 @@ function updateTotalCost(event) {
     });
 }
 
-function displayProductAddedAlertModal() {
-	if (hideProductAddedAlertTimer)
-		clearTimeout(hideProductAddedAlertTimer);
+function deleteActionClick(event) {
+	const transactionIdValue = document.getElementById("transactionId").value;
+	const deleteActionUrl = "/checkout=" + transactionIdValue;
+	ajaxDelete(deleteActionUrl, (callbackResponse) => {
+		if(isSuccessResponse(callbackResponse)) {
+			completeDeleteAction(callbackResponse);
+		} else {
+			displayError(callbackResponse.errorMessage);
+		}
+	});
+};
 
-	const productAddedAlertModalElement = getProductAddedAlertModalElement();
-	// productAddedAlertModalElement.style.display = 'none';
-	productAddedAlertModalElement.style.display = 'block';
+function completeDeleteAction(callbackResponse) {
+	if (callbackResponse.data == null) {
+		return;
+	}
 
-	hideProductAddedAlertTimer = setTimeout(hideProductAddedAlertModal, 1200);
+	if (callbackResponse.data.redirectUrl != null
+		&& callbackResponse.data.redirectUrl !== "") {
+
+		window.location.replace(callbackResponse.data.redirectUrl);
+		return;
+	}
 }
 
 function hideProductAddedAlertModal() {
