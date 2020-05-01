@@ -129,12 +129,11 @@ export const deleteTransaction = async (req: Request, res: Response): Promise<vo
 	});
 };
 
-
-export const update = async (req: Request, res: Response): Promise<void> => {
-	const status = await TransactionEntryUpdateCommand.execute(req.body).catch((error: any): CommandResponse<TransactionEntry> => {
+export const updateTransactionEntries = async (req: Request, res: Response): Promise<void> => {
+	const updated = await TransactionEntryUpdateCommand.set(req.body).catch((error: any): CommandResponse<TransactionEntry> => {
 		console.log(error);
 		return { status: 500 };
 	});
-	res.status(status.status);
-	res.end("Yey");
+	res.status(200);
+	res.send(updated);
 };
