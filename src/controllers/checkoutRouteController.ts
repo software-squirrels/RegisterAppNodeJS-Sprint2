@@ -53,7 +53,7 @@ export const start = async (req: Request, res: Response): Promise<void> => {
 	console.log(items);
 	res.render(ViewNameLookup.Checkout, <CheckoutPageResponse>{
 		transactionEntries: items,
-		transactionId: uuidv1(),
+		transactionId: req.query[QueryParameterLookup.TransactionId],
 		products: products
 	});
 };
@@ -112,7 +112,7 @@ const saveTransaction = async (
 };
 
 export const deleteTransaction = async (req: Request, res: Response): Promise<void> => {
-	return TransactionEntryDeleteCommand.execute(req.query[QueryParameterLookup.TransactionId])
+	return TransactionEntryDeleteCommand.deleteProductInCart(req.query[QueryParameterLookup.TransactionId], req.query["productId"])
 	.then((deleteTransactionCommandResponse: CommandResponse<void>): void => {
 		res.send({
 				status: deleteTransactionCommandResponse.status

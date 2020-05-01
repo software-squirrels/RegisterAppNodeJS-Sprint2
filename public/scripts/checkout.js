@@ -1,19 +1,17 @@
 document.addEventListener("DOMContentLoaded", () => {
 	document.getElementById("updateButton")
         .addEventListener("click", updateTotalCost);
-	
+
 	//document.getElementById("search").addEventListener("keypress", productSearch);
-	
-	const deleteButtonElement = document.getElementById("deletebutton");
-	if (deleteButtonElement != null) {
-		const deleteButtonElements = deleteButtonElement.children;
+
+	const deleteButtonElements = document.getElementsByClassName("deletebutton");
+	if (deleteButtonElements != null) {
 
 		for (let i = 0; i < deleteButtonElements.length; i++) {
-			console.log("111111");
 			deleteButtonElements[i].addEventListener("click", deleteActionClick);
 		}
 	}
-	
+
 	// TODO: Back and Finalize button clicks
 	getBackActionElement().addEventListener(
 		"click",
@@ -65,16 +63,18 @@ function updateTotalCost(event) {
     });
 }
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 function deleteActionClick(event) {
 	const transactionIdValue = document.getElementById("transactionId").value;
-	const deleteActionUrl = "/checkout=" + transactionIdValue;
-	ajaxDelete(deleteActionUrl, (callbackResponse) => {
-		if(isSuccessResponse(callbackResponse)) {
-			completeDeleteAction(callbackResponse);
-		} else {
-			displayError(callbackResponse.errorMessage);
-		}
-	});
+	const listItem = event.target.parentElement;
+	const clickedProductId = listItem.querySelector("input[name='productId']").value;
+	const deleteActionUrl = "/checkout?transactionId=" + transactionIdValue + "&productId=" + clickedProductId;
+	ajaxDelete(deleteActionUrl, (callbackResponse) => {return});
+ 	ajaxGet(deleteActionUrl, async (callbackResponse) => {await sleep(2000); return});
+	document.location.reload();
 };
 
 function completeDeleteAction(callbackResponse) {
@@ -84,8 +84,7 @@ function completeDeleteAction(callbackResponse) {
 
 	if (callbackResponse.data.redirectUrl != null
 		&& callbackResponse.data.redirectUrl !== "") {
-
-		window.location.replace(callbackResponse.data.redirectUrl);
+		window.location.reload();
 		return;
 	}
 }
