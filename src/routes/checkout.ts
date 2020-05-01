@@ -7,7 +7,7 @@ function checkoutRoutes(server: express.Express) {
 
 	server.post(RouteLookup.Checkout, checkoutRouteController.confirmation);
 
-	server.patch(RouteLookup.Checkout, checkoutRouteController.update);
+	server.patch(RouteLookup.Checkout, checkoutRouteController.updateTransactionEntries);
 
 	// server.delete(
 		// (RouteLookup.API + RouteLookup.SignOut),

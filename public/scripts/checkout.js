@@ -1,8 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
 	document.getElementById("updateButton")
-        .addEventListener("click", updateTotalCost);
+        .addEventListener("click", updateItems);
 	
 	//document.getElementById("search").addEventListener("keypress", productSearch);
+	const urlParams = new URLSearchParams(window.location.search);
+	window.transactionId = urlParams.get('transactionId')
 	
 	// TODO: Back and Finalize button clicks
 	getBackActionElement().addEventListener(
@@ -15,44 +17,52 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-function productSearch(event) {
-	if (event.which !== 13) { // ENTER/RETURN key
-		return;
-	}
-
-	const productListingElement = document.getElementById("TransactionListing");
-	if (productListingElement == null) {
-		return;
-	}
-
-	const productListElements = productListingElement.children;
-
-	for (let i = 0; i < productListElements.length; i++) {
-		const lookupCode = productListElements[i].querySelector('span[name="productLookupCode"]').innerHTML;
-		if (event.target.value === "") {
-			productListElements[i].style.display = "block";
-		} else if (!lookupCode.toLowerCase().includes(event.target.value.toLowerCase())) {
-			productListElements[i].style.display = "none";
-		} else {
-			productListElements[i].style.display = "block";
+async function updateItems() {
+	const listItems = Array.from(document.getElementById('TransactionListing').children);
+	const toUpdate = [];
+	listItems.forEach(elem => {
+		const amountElem = elem.querySelector("input[name='amount']");
+		const oldAmount = String(amountElem.placeholder);
+		const newAmount = String(amountElem.value);
+		if (newAmount && newAmount !== oldAmount) {
+			toUpdate.push({
+				transactionId: window.transactionId,
+				quantity: newAmount,
+				productId: elem.querySelector("input[name='productId']").value
+			})
 		}
-	}
-}
+	})
+	const updated = await (await fetch('/checkout', {
+		method: 'PATCH',
+		body: JSON.stringify(toUpdate),
+		headers: {
+			"Content-type": "application/json; charset=UTF-8"
+		}
+	})).json()
 
-function updateTotalCost(event) {
-	const transactionIdIsDefined = transactionId != null && transactionId.trim() !== '';
-		const updateCartActionUrl = ('/api/transaction/' + (transactionIdIsDefined ? transactionId : ''));
-		const updateTransactionRequest = {
-			productId: item,
-			productPrice: 5,
-			productQuantity: value,
-			transactionId
-		};
-    ajaxPatch(updateCartActionUrl, updateTransactionRequest, (callbackResponse) => {
-        if (isSuccessResponse(callbackResponse)) {
-            displayProductAddedAlertModal();
-        }
-    });
+	let addedPrice = 0;
+	let addedItems = 0;
+	listItems.forEach(elem => {
+		const amountElem = elem.querySelector("input[name='amount']");
+		const oldAmount = Number(amountElem.placeholder);
+		const newAmount = Number(amountElem.value);
+		const oldPrice = Number(elem.querySelector("span[name='price']").textContent.substring(8));
+		if (newAmount && newAmount !== oldAmount) {
+			const updatedValues = updated.shift()
+			elem.querySelector("span[name='price']").textContent = 'Price: $' + updatedValues.price;
+			amountElem.placeholder = updatedValues.quantity;
+			amountElem.value = "";
+			addedPrice += updatedValues.price - oldPrice;
+			addedItems += newAmount - oldAmount;
+		}
+	})
+
+	const priceElem = document.getElementById('totalPrice');
+	const quantityElem = document.getElementById('totalQuantity');
+	const newTotalAmount = Number(quantityElem.textContent.substring(16)) + addedItems;
+	const newTotalPrice = Number(priceElem.textContent.substring(22)) + addedPrice;
+	priceElem.textContent = `Total Checkout Price: ${newTotalPrice}`;
+	quantityElem.textContent = `Total Quantity: ${newTotalAmount}`;
 }
 
 function displayProductAddedAlertModal() {

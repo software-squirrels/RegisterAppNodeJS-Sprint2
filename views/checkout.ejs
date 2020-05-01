@@ -46,7 +46,7 @@
 							<span name="productLookupCode"><%= product.lookupCode %></span>
 							<br />&nbsp;&nbsp;<span name="price">Price: $<%= product.price %></span>
 							<br />&nbsp;&nbsp;<label for="quantity">Quantity: </label>
-  							<input type="number" placeholder="<%= product.quantity %>" min="0" max="999" name="quantity">
+  							<input type="number" name="amount" placeholder="<%= product.quantity %>" min="0" max="999" name="quantity">
 							<!--<span class="add">Add</span>-->
 							<!--<span class="update" style="float: right;">Update</span>-->
 						</li>
@@ -71,10 +71,10 @@
 					<% }); %>
 					<br />
 					<br />
-					<span name="Total Checkout Price:">Total Checkout Price: <%= totalPrice %></span>
+					<span id="totalPrice">Total Checkout Price: <%= totalPrice %></span>
 					<br />
 					<br />
-					<span name="Total Checkout Price:">Total Quantity: <%= totalQuantity %></span>
+					<span id="totalQuantity">Total Quantity: <%= totalQuantity %></span>
 					<!--<label for="totalQuantity">Total Quantity:</label>
 					<input id="totalQuantity" type="text" value="" class="update"/>-->
 				</form>

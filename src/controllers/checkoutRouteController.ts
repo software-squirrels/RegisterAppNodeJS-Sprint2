@@ -9,6 +9,7 @@ import * as TransactionUpdateCommand from "./commands/transactions/transactionUp
 import * as EmployeeSignIn from "./commands/employees/employeeSignInCommand";
 import * as EmployeeHelper from "./commands/employees/helpers/employeeHelper";
 import * as ProductsQuery from "./commands/products/productsQuery";
+import * as TransactionEntryUpdateCommand from "./commands/transactionEntries/transactionEntryUpdateCommand";
 
 const processStartTransactionError = (error: any, res: Response): void => {
 	if (Helper.processStartError(error, res)) {
@@ -109,4 +110,13 @@ const saveTransaction = async (
 export const update = async (req: Request, res: Response): Promise<void> => {
 	// Update Function
 	return saveTransaction(req, res, TransactionUpdateCommand.execute);
+};
+
+export const updateTransactionEntries = async (req: Request, res: Response): Promise<void> => {
+	const updated = await TransactionEntryUpdateCommand.set(req.body).catch((error: any): CommandResponse<TransactionEntry> => {
+		console.log(error);
+		return { status: 500 };
+	});
+	res.status(200);
+	res.send(updated);
 };
