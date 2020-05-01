@@ -34,14 +34,46 @@ export const execute = async (
 		const oldEntry = transactionEntryQuery.rows[0];
 		oldEntry.quantity += transactionEntrySaveRequest.quantity;
 		oldEntry.price = oldEntry.quantity * product.price;
-		await pg.query("UPDATE transactionentry SET quantity = quantity+$1, price = price+$2 WHERE transactionid = $3;",
+		await pg.query("UPDATE transactionentry SET quantity = quantity+$1, price = price+$2 WHERE transactionid = $3 AND productid = $4;",
 			[
 				transactionEntrySaveRequest.quantity,
 				transactionEntrySaveRequest.quantity * product.price,
-				transactionEntrySaveRequest.transactionId
+				transactionEntrySaveRequest.transactionId,
+				product.id
 			]
 		);
 	}
 	await pg.end();
 	return <CommandResponse<TransactionEntry>>{ status: 200 };
+};
+
+export const set = async (
+	transactionEntrySaveRequest: TransactionEntrySaveRequest[]
+): Promise<any[]> => {
+	const pg = new PG.Client({connectionString: process.env.DATABASE_URL, ssl: "verify-full"});
+	await pg.connect();
+
+	for (const item of transactionEntrySaveRequest) {
+		const productId = item.productId;
+
+		const productQuery = await pg.query("select * from product where id = $1;", [productId]);
+		if (productQuery.rowCount === 0) {
+			return Promise.reject(ResourceKey.PRODUCT_LOOKUP_CODE_INVALID);
+		}
+		const product = productQuery.rows[0];
+		const transactionId = item.transactionId;
+		const amount = item.quantity;
+		item.price = amount * product.price;
+		await pg.query("UPDATE transactionentry SET quantity = $1, price = $2 WHERE transactionid = $3 AND productid = $4;",
+			[
+				amount,
+				item.price,
+				transactionId,
+				productId
+			]
+		);
+	}
+
+	await pg.end();
+	return transactionEntrySaveRequest;
 };
