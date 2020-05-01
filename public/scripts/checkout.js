@@ -72,18 +72,12 @@ async function updateItems() {
 	quantityElem.textContent = `Total Quantity: ${newTotalAmount}`;
 }
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 function deleteActionClick(event) {
 	const transactionIdValue = document.getElementById("transactionId").value;
 	const listItem = event.target.parentElement;
 	const clickedProductId = listItem.querySelector("input[name='productId']").value;
 	const deleteActionUrl = "/checkout?transactionId=" + transactionIdValue + "&productId=" + clickedProductId;
-	ajaxDelete(deleteActionUrl, (callbackResponse) => {return});
- 	ajaxGet(deleteActionUrl, async (callbackResponse) => {await sleep(2000); return});
-	document.location.reload();
+	ajaxDelete(deleteActionUrl, (callbackResponse) => {document.location.reload();});
 };
 
 function completeDeleteAction(callbackResponse) {
